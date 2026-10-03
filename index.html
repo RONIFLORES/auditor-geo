@@ -1,0 +1,190 @@
+  <!-- TELA 1: ENTRADA -->
+  <section id="screen-1" class="text-center space-y-8 py-8">
+    <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-cyan-500/10 border border-cyan-500/30 text-cyan-400 text-xs sm:text-sm font-semibold tracking-wide uppercase">
+      <i class="fa-solid fa-microchip"></i> Verificação de Visibilidade em IA
+    </div>
+
+    <h1 class="text-3xl sm:text-5xl lg:text-6xl font-black text-white tracking-tight leading-tight">
+      Sua Empresa é um <br>
+      <span class="text-transparent bg-clip-text bg-gradient-to-r from-red-500 via-amber-400 to-rose-500">
+        FANTASMA PARA AS IAs?
+      </span>
+    </h1>
+
+    <div class="max-w-2xl mx-auto space-y-3.5 text-slate-300 text-base sm:text-lg">
+      <div class="p-3 bg-slate-900/60 rounded-xl border border-slate-800 flex items-center justify-center gap-3">
+        <i class="fa-solid fa-circle-question text-cyan-400"></i>
+        <span>O <strong>ChatGPT</strong> recomenda o seu comércio ou indica o seu concorrente?</span>
+      </div>
+      <div class="p-3 bg-slate-900/60 rounded-xl border border-slate-800 flex items-center justify-center gap-3">
+        <i class="fa-solid fa-circle-question text-cyan-400"></i>
+        <span>O <strong>Google Gemini</strong> encontra a sua localização e o seu catálogo?</span>
+      </div>
+      <div class="p-3 bg-slate-900/60 rounded-xl border border-slate-800 flex items-center justify-center gap-3">
+        <i class="fa-solid fa-circle-question text-cyan-400"></i>
+        <span>O <strong>Perplexity</strong> sabe que a sua loja existe no seu bairro?</span>
+      </div>
+    </div>
+
+    <div class="pt-4 max-w-lg mx-auto">
+      <button onclick="changeScreen(2)" class="pulse-action w-full py-5 px-8 bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-slate-950 font-black text-lg sm:text-xl rounded-2xl shadow-xl shadow-cyan-500/20 transition duration-300 flex items-center justify-center gap-3 cursor-pointer">
+        <i class="fa-solid fa-bolt text-xl"></i> QUERO AVALIAR MINHA EMPRESA AGORA
+      </button>
+      <p class="text-xs text-slate-500 mt-3 font-mono">Consulta direta aos motores neurais • Sem custos</p>
+    </div>
+  </section>
+
+  <!-- TELA 2: FORMULARIO -->
+  <section id="screen-2" class="hidden max-w-xl mx-auto bg-slate-900/95 border border-slate-800 rounded-3xl p-6 sm:p-10 shadow-2xl backdrop-blur-md">
+    <div class="text-center mb-6">
+      <h2 class="text-2xl font-black text-white tracking-tight">Dados para Auditoria Algorítmica</h2>
+      <p class="text-xs text-slate-400 mt-1">Preencha as informações para construirmos o prompt de varredura neuronal.</p>
+    </div>
+
+    <form id="auditForm" onsubmit="executeLiveAudit(event)" class="space-y-4">
+      <div>
+        <label class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1">Nome Comercial da Empresa</label>
+        <div class="relative">
+          <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center text-slate-500"><i class="fa-solid fa-store"></i></span>
+          <input type="text" id="businessName" required placeholder="Ex: Auto Mecânica Central" class="w-full pl-10 pr-4 py-3.5 bg-slate-950 border border-slate-700/80 rounded-xl text-white placeholder-slate-500 focus:outline-none focus:border-cyan-400 text-sm">
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div>
+          <label class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1">Cidade e UF</label>
+          <div class="relative">
+            <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center text-slate-500"><i class="fa-solid fa-location-dot"></i></span>
+            <input type="text" id="city" required placeholder="Ex: Matão - SP" class="w-full pl-10 pr-4 py-3.5 bg-slate-950 border border-slate-700/80 rounded-xl text-white placeholder-slate-500 focus:outline-none focus:border-cyan-400 text-sm">
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1">Segmento / Serviço</label>
+          <div class="relative">
+            <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center text-slate-500"><i class="fa-solid fa-wrench"></i></span>
+            <input type="text" id="niche" required placeholder="Ex: Oficina Mecânica" class="w-full pl-10 pr-4 py-3.5 bg-slate-950 border border-slate-700/80 rounded-xl text-white placeholder-slate-500 focus:outline-none focus:border-cyan-400 text-sm">
+          </div>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div>
+          <label class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1">WhatsApp de Contato</label>
+          <div class="relative">
+            <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center text-slate-500"><i class="fa-brands fa-whatsapp"></i></span>
+            <input type="tel" id="phone" required placeholder="(00) 00000-0000" class="w-full pl-10 pr-4 py-3.5 bg-slate-950 border border-slate-700/80 rounded-xl text-white placeholder-slate-500 focus:outline-none focus:border-cyan-400 text-sm">
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1">E-mail para Envio do Laudo</label>
+          <div class="relative">
+            <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center text-slate-500"><i class="fa-solid fa-envelope"></i></span>
+            <input type="email" id="email" required placeholder="seu@email.com" class="w-full pl-10 pr-4 py-3.5 bg-slate-950 border border-slate-700/80 rounded-xl text-white placeholder-slate-500 focus:outline-none focus:border-cyan-400 text-sm">
+          </div>
+        </div>
+      </div>
+
+      <button type="submit" class="w-full mt-4 py-4 px-6 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black text-lg rounded-xl shadow-lg shadow-emerald-500/20 flex items-center justify-center gap-2 transition duration-200 cursor-pointer">
+        <i class="fa-solid fa-play"></i> EXECUTAR SCANNER GRATUITO
+      </button>
+
+      <button type="button" onclick="changeScreen(1)" class="w-full text-xs text-slate-500 hover:text-slate-400 text-center py-1 transition">
+        ← Voltar para o início
+      </button>
+    </form>
+  </section>
+
+  <!-- TELA DE TRANSIÇÃO (RADAR ATIVO) -->
+  <section id="screen-loading" class="hidden max-w-lg mx-auto text-center py-16 space-y-6">
+    <div class="relative w-24 h-24 mx-auto">
+      <div class="absolute inset-0 rounded-full border-4 border-cyan-500/20 animate-ping"></div>
+      <div class="relative w-24 h-24 rounded-full border-4 border-cyan-400 border-t-transparent animate-spin flex items-center justify-center">
+        <i class="fa-solid fa-brain text-cyan-400 text-2xl"></i>
+      </div>
+    </div>
+
+    <div>
+      <h3 id="loadingTitle" class="text-xl font-bold text-white">Disparando prompts em tempo real...</h3>
+      <p id="loadingDesc" class="text-xs font-mono text-slate-400 mt-2">Consultando OpenAI e Google Gemini em simultâneo...</p>
+    </div>
+
+    <div class="w-full bg-slate-900 border border-slate-800 rounded-full h-2.5 overflow-hidden">
+      <div id="loadingBar" class="bg-gradient-to-r from-cyan-400 to-blue-500 h-full w-0 transition-all duration-300"></div>
+    </div>
+  </section>
+
+  <!-- TELA 3: RESULTADO DIVIDIDO MEIO A MEIO -->
+  <section id="screen-3" class="hidden space-y-6">
+    <div id="generalBanner" class="p-5 rounded-2xl border flex flex-col sm:flex-row items-center justify-between gap-4 text-center sm:text-left">
+      <div class="flex items-center gap-4">
+        <div id="statusIcon" class="w-12 h-12 rounded-xl flex items-center justify-center text-2xl shrink-0"></div>
+        <div>
+          <h3 id="statusTitle" class="text-lg font-bold"></h3>
+          <p id="statusSubtitle" class="text-xs text-slate-300 mt-0.5"></p>
+        </div>
+      </div>
+      <span id="badgeGeneral" class="px-3 py-1 text-xs font-mono uppercase font-bold rounded-lg border"></span>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <!-- CHATGPT -->
+      <div class="bg-slate-900/95 border border-slate-800 rounded-2xl p-5 flex flex-col justify-between shadow-xl">
+        <div>
+          <div class="flex items-center justify-between border-b border-slate-800 pb-3 mb-4">
+            <div class="flex items-center gap-2.5">
+              <div class="w-8 h-8 rounded-lg bg-emerald-500/20 text-emerald-400 flex items-center justify-center text-lg">
+                <i class="fa-solid fa-robot"></i>
+              </div>
+              <div>
+                <h4 class="font-bold text-sm text-white">OpenAI ChatGPT</h4>
+                <span class="text-[10px] text-slate-400 font-mono">Modelo GPT-4o-mini</span>
+              </div>
+            </div>
+            <span id="badgeChatGPT" class="px-2.5 py-1 text-xs rounded-md border font-semibold flex items-center gap-1"></span>
+          </div>
+          <div class="text-[11px] font-mono text-slate-400 mb-1">Prompt enviado ao modelo:</div>
+          <div id="chatgptPrompt" class="p-3 bg-slate-950 rounded-lg border border-slate-850 text-xs text-slate-300 italic mb-4"></div>
+          <div class="text-[11px] font-mono text-slate-400 mb-1">Resposta autêntica do modelo:</div>
+          <div id="chatgptOutput" class="p-4 bg-slate-950/80 rounded-xl border border-slate-850 text-xs text-slate-300 leading-relaxed max-h-60 overflow-y-auto whitespace-pre-wrap"></div>
+        </div>
+      </div>
+
+      <!-- GEMINI -->
+      <div class="bg-slate-900/95 border border-slate-800 rounded-2xl p-5 flex flex-col justify-between shadow-xl">
+        <div>
+          <div class="flex items-center justify-between border-b border-slate-800 pb-3 mb-4">
+            <div class="flex items-center gap-2.5">
+              <div class="w-8 h-8 rounded-lg bg-blue-500/20 text-blue-400 flex items-center justify-center text-lg">
+                <i class="fa-solid fa-wand-magic-sparkles"></i>
+              </div>
+              <div>
+                <h4 class="font-bold text-sm text-white">Google Gemini</h4>
+                <span class="text-[10px] text-slate-400 font-mono">Gemini 1.5 Flash</span>
+              </div>
+            </div>
+            <span id="badgeGemini" class="px-2.5 py-1 text-xs rounded-md border font-semibold flex items-center gap-1"></span>
+          </div>
+          <div class="text-[11px] font-mono text-slate-400 mb-1">Prompt enviado ao modelo:</div>
+          <div id="geminiPrompt" class="p-3 bg-slate-950 rounded-lg border border-slate-850 text-xs text-slate-300 italic mb-4"></div>
+          <div class="text-[11px] font-mono text-slate-400 mb-1">Resposta autêntica do modelo:</div>
+          <div id="geminiOutput" class="p-4 bg-slate-950/80 rounded-xl border border-slate-850 text-xs text-slate-300 leading-relaxed max-h-60 overflow-y-auto whitespace-pre-wrap"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="bg-gradient-to-b from-slate-900 to-slate-950 border border-slate-800 rounded-3xl p-6 sm:p-8 text-center space-y-4 shadow-2xl">
+      <h4 class="text-xl sm:text-2xl font-black text-white">Quer que o seu comércio passe a ser a recomendação #1 dessas IAs?</h4>
+      <p class="text-xs sm:text-sm text-slate-400 max-w-xl mx-auto">
+        Existe uma estrutura canônica baseada em <strong>Schema.org</strong> e <strong>GEO</strong> que força os algoritmos a reconhecerem a sua empresa na sua cidade.
+      </p>
+      <div class="max-w-lg mx-auto pt-2">
+        <a id="btnToVSL" href="vsl.html" class="pulse-action block w-full py-5 px-6 bg-gradient-to-r from-emerald-500 via-teal-500 to-cyan-500 text-slate-950 font-black text-lg sm:text-xl rounded-2xl shadow-xl shadow-emerald-500/20 uppercase text-center">
+          <i class="fa-solid fa-circle-play mr-2"></i> VER COMO DESTRAVAR MINHA EMPRESA
+        </a>
+      </div>
+    </div>
+  </section>
+
+</div>
