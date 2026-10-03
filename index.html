@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Auditor GEO - Sua Empresa no Radar das IAs</title>
+  <title>Auditor GEO - Análise Algorítmica</title>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
     body { background-color: #030712; color: #f3f4f6; min-height: 100vh; display: flex; flex-direction: column; justify-content: space-between; }
@@ -60,16 +60,14 @@
     .status-banner p { font-size: 0.8rem; color: #d1d5db; margin-top: 4px; }
     .pill-red { background: rgba(239,68,68,0.2); border: 1px solid #ef4444; color: #fca5a5; font-size: 0.75rem; font-weight: 800; padding: 6px 12px; border-radius: 8px; text-transform: uppercase; }
 
-    .ai-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 24px; }
-    @media (max-width: 680px) { .ai-grid { grid-template-columns: 1fr; } }
-    .ai-card { background: #111827; border: 1px solid #1f2937; border-radius: 16px; padding: 20px; }
-    .ai-card-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #1f2937; padding-bottom: 12px; margin-bottom: 12px; }
-    .ai-title { font-weight: 800; font-size: 0.95rem; }
-    .ai-model { font-size: 0.7rem; color: #6b7280; }
-    .badge-result { font-size: 0.7rem; font-weight: 700; padding: 4px 8px; border-radius: 6px; }
+    .ai-card-single { background: #111827; border: 1px solid #1f2937; border-radius: 16px; padding: 24px; margin-bottom: 24px; }
+    .ai-card-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #1f2937; padding-bottom: 14px; margin-bottom: 14px; }
+    .ai-title { font-weight: 800; font-size: 1.1rem; display: flex; align-items: center; gap: 8px; }
+    .ai-model { font-size: 0.75rem; color: #6b7280; }
+    .badge-result { font-size: 0.75rem; font-weight: 700; padding: 6px 12px; border-radius: 6px; }
     .badge-omitted { background: rgba(239,68,68,0.15); color: #f87171; border: 1px solid rgba(239,68,68,0.3); }
     .badge-cited { background: rgba(16,185,129,0.15); color: #34d399; border: 1px solid rgba(16,185,129,0.3); }
-    .terminal-box { background: #030712; border: 1px solid #1f2937; border-radius: 10px; padding: 12px; font-size: 0.75rem; color: #9ca3af; max-height: 180px; overflow-y: auto; white-space: pre-wrap; font-family: monospace; line-height: 1.4; }
+    .terminal-box { background: #030712; border: 1px solid #1f2937; border-radius: 10px; padding: 16px; font-size: 0.85rem; color: #d1d5db; max-height: 260px; overflow-y: auto; white-space: pre-wrap; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; line-height: 1.6; }
 
     .cta-card { background: linear-gradient(180deg, #111827, #0b0f17); border: 1px solid #1f2937; border-radius: 20px; padding: 32px 24px; text-align: center; }
     .cta-card h4 { font-size: 1.3rem; font-weight: 800; margin-bottom: 8px; }
@@ -85,33 +83,33 @@
       <div class="dot"></div>
       AUDITOR<span>GEO</span>
     </div>
-    <div class="status-pill">Status: <strong>APIs Conectadas</strong></div>
+    <div class="status-pill">Motor: <strong>Google Gemini Ativo</strong></div>
   </header>
 
   <main>
     <div class="container">
 
-      <!-- TELA 1: ENTRADA -->
+      <!-- TELA 1: IMPACTO -->
       <section id="step-1" class="step-box active hero">
         <div class="tag">Varredura de Presença em IA</div>
         <h1>Sua Empresa é um <br><span>FANTASMA PARA AS IAs?</span></h1>
         
         <div class="bullets">
-          <div class="bullet-item"><span>?</span> O <strong>ChatGPT</strong> recomenda seu comércio ou aponta o concorrente?</div>
-          <div class="bullet-item"><span>?</span> O <strong>Google Gemini</strong> encontra o seu catálogo na sua cidade?</div>
-          <div class="bullet-item"><span>?</span> As IAs sabem onde fica seu endereço comercial?</div>
+          <div class="bullet-item"><span>?</span> O <strong>Google Gemini</strong> encontra a sua localização e o seu catálogo?</div>
+          <div class="bullet-item"><span>?</span> As IAs do ecossistema Google recomendam seu concorrente no bairro?</div>
+          <div class="bullet-item"><span>?</span> Sua empresa existe para quem pesquisa por voz e IA no smartphone?</div>
         </div>
 
         <div>
           <button onclick="goToStep(2)" class="btn-primary">QUERO AVALIAR MINHA EMPRESA AGORA</button>
-          <div class="hint">Consulta neural em tempo real • Totalmente confidencial</div>
+          <div class="hint">Consulta neural direta aos servidores Google • Sem custos</div>
         </div>
       </section>
 
       <!-- TELA 2: FORMULARIO -->
       <section id="step-2" class="step-box card">
         <h2>Dados para a Varredura</h2>
-        <p class="sub">Construiremos o prompt com sua geolocalização e nicho para testar os motores.</p>
+        <p class="sub">Construiremos a consulta geolocalizada para auditar a resposta da IA no seu município.</p>
 
         <form id="scannerForm" onsubmit="runScanner(event)">
           <div class="form-group">
@@ -142,15 +140,15 @@
           </div>
 
           <button type="submit" class="btn-submit">EXECUTAR SCANNER NEURAL AGORA</button>
-          <button type="button" onclick="goToStep(1)" class="btn-back">← Voltar</button>
+          <button type="button" onclick="goToStep(1)" class="btn-back">← Voltar para o início</button>
         </form>
       </section>
 
-      <!-- TELA CARREGANDO -->
+      <!-- TELA CARREGAMENTO -->
       <section id="step-loading" class="step-box card radar">
         <div class="spinner"></div>
-        <h3 id="loadingText" style="font-size: 1.2rem; font-weight: 700;">Consultando modelos neurais...</h3>
-        <p style="font-size: 0.8rem; color: #9ca3af; margin-top: 6px;">Interrogando OpenAI GPT e Google Gemini com contexto local...</p>
+        <h3 id="loadingText" style="font-size: 1.2rem; font-weight: 700;">Consultando Google Gemini em tempo real...</h3>
+        <p style="font-size: 0.8rem; color: #9ca3af; margin-top: 6px;">Interrogando o modelo neural com geolocalização exata do seu negócio...</p>
         <div class="progress-track">
           <div id="bar" class="progress-bar"></div>
         </div>
@@ -160,43 +158,28 @@
       <section id="step-3" class="step-box">
         <div id="statusBanner" class="status-banner">
           <div>
-            <h3 id="statusTitle">STATUS: EMPRESA INVISÍVEL PARA OS MOTORES</h3>
-            <p id="statusDesc">Nenhuma das IAs recomendou seu estabelecimento no seu município.</p>
+            <h3 id="statusTitle">STATUS: EMPRESA OMITIDA NO MOTOR DE IA</h3>
+            <p id="statusDesc">O motor neural do Google não citou a sua empresa entre as principais recomendações locais.</p>
           </div>
-          <div id="statusPill" class="pill-red">0 Menções</div>
+          <div id="statusPill" class="pill-red">Omitido</div>
         </div>
 
-        <div class="ai-grid">
-          <!-- CHATGPT -->
-          <div class="ai-card">
-            <div class="ai-card-header">
-              <div>
-                <div class="ai-title">OpenAI ChatGPT</div>
-                <div class="ai-model">GPT-4o-mini</div>
-              </div>
-              <div id="badgeGpt" class="badge-result badge-omitted">Omitido</div>
+        <!-- CARD EXCLUSIVO GEMINI -->
+        <div class="ai-card-single">
+          <div class="ai-card-header">
+            <div>
+              <div class="ai-title">Google Gemini</div>
+              <div class="ai-model">Gemini 1.5 Flash • Análise Neural de Entidades Locais</div>
             </div>
-            <label style="font-size:0.65rem;">Resposta em Tempo Real:</label>
-            <div id="outGpt" class="terminal-box">Carregando...</div>
+            <div id="badgeGemini" class="badge-result badge-omitted">Omitido</div>
           </div>
-
-          <!-- GEMINI -->
-          <div class="ai-card">
-            <div class="ai-card-header">
-              <div>
-                <div class="ai-title">Google Gemini</div>
-                <div class="ai-model">Gemini 1.5 Flash</div>
-              </div>
-              <div id="badgeGemini" class="badge-result badge-omitted">Omitido</div>
-            </div>
-            <label style="font-size:0.65rem;">Resposta em Tempo Real:</label>
-            <div id="outGemini" class="terminal-box">Carregando...</div>
-          </div>
+          <label style="font-size:0.75rem; color:#9ca3af; display:block; margin-bottom:8px;">Resposta Oficial do Motor:</label>
+          <div id="outGemini" class="terminal-box">Carregando laudo...</div>
         </div>
 
         <div class="cta-card">
-          <h4>Quer blindar sua empresa e se tornar o #1 indicado nas IAs?</h4>
-          <p>Existe um protocolo canónico estruturado em GEO que injeta os seus dados diretamente no grafo de conhecimento dos modelos.</p>
+          <h4>Quer blindar sua empresa e se tornar a recomendação #1 no Google Gemini?</h4>
+          <p>Existe um protocolo canónico estruturado em GEO que injeta os seus dados diretamente no grafo de conhecimento da IA.</p>
           <a id="btnNext" href="#" class="btn-primary" style="display:block; margin: 0 auto;">DESTRAVAR MEU ESTABELECIMENTO AGORA</a>
         </div>
       </section>
@@ -222,7 +205,6 @@
       const phone = document.getElementById('phone').value.trim();
       const email = document.getElementById('email').value.trim();
 
-      // Muda para tela de carregamento
       goToStep('loading');
       const bar = document.getElementById('bar');
       bar.style.width = '30%';
@@ -245,22 +227,39 @@
         const data = await res.json();
         if (!res.ok) throw new Error(data.error || 'Erro na requisição');
 
-        // Renderiza
-        document.getElementById('outGpt').innerText = data.chatgpt?.text || "Sem retorno do motor.";
-        document.getElementById('outGemini').innerText = data.gemini?.text || "Sem retorno do motor.";
-
-        const gptOk = data.chatgpt?.mentioned;
+        const gemText = data.gemini?.text || "Sem retorno do motor.";
         const gemOk = data.gemini?.mentioned;
 
-        const bGpt = document.getElementById('badgeGpt');
-        bGpt.className = 'badge-result ' + (gptOk ? 'badge-cited' : 'badge-omitted');
-        bGpt.innerText = gptOk ? '✓ Citado' : '✗ Omitido';
+        document.getElementById('outGemini').innerText = gemText;
 
         const bGem = document.getElementById('badgeGemini');
-        bGem.className = 'badge-result ' + (gemOk ? 'badge-cited' : 'badge-omitted');
-        bGem.innerText = gemOk ? '✓ Citado' : '✗ Omitido';
+        const sBanner = document.getElementById('statusBanner');
+        const sTitle = document.getElementById('statusTitle');
+        const sDesc = document.getElementById('statusDesc');
+        const sPill = document.getElementById('statusPill');
 
-        // Redirecionamento da VSL levando os dados do lead
+        if (gemOk) {
+          bGem.className = 'badge-result badge-cited';
+          bGem.innerText = '✓ Citado';
+          sBanner.style.borderColor = '#10b981';
+          sBanner.style.backgroundColor = 'rgba(16, 185, 129, 0.1)';
+          sTitle.style.color = '#34d399';
+          sTitle.innerText = 'STATUS: EMPRESA ENCONTRADA NA IA!';
+          sDesc.innerText = 'Parabéns! O Google Gemini reconhece seu comércio na cidade.';
+          sPill.className = 'badge-result badge-cited';
+          sPill.innerText = '✓ Reconhecido';
+        } else {
+          bGem.className = 'badge-result badge-omitted';
+          bGem.innerText = '✗ Omitido';
+          sBanner.style.borderColor = '#ef4444';
+          sBanner.style.backgroundColor = 'rgba(239, 68, 68, 0.1)';
+          sTitle.style.color = '#f87171';
+          sTitle.innerText = 'STATUS: EMPRESA OMITIDA NO MOTOR DE IA';
+          sDesc.innerText = 'O motor neural do Google não citou a sua empresa entre as principais recomendações locais.';
+          sPill.className = 'pill-red';
+          sPill.innerText = 'Omitido';
+        }
+
         const urlParams = new URLSearchParams(window.location.search);
         const refMentor = urlParams.get('ref') || 'admin';
         document.getElementById('btnNext').href = `vsl.html?ref=${refMentor}&empresa=${encodeURIComponent(businessName)}&cidade=${encodeURIComponent(city)}&whats=${encodeURIComponent(phone)}&email=${encodeURIComponent(email)}`;
