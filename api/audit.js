@@ -13,7 +13,7 @@ export default async function handler(req, res) {
     return res.status(400).json({ error: 'Preencha os campos obrigatórios (Empresa, Cidade e Nicho).' });
   }
 
-  // 1. CAPTURA DO LEAD (GOOGLE SHEETS OU WEBHOOK DISPARADOR)
+  // 1. CAPTURA DO LEAD (WEBHOOK / PLANILHA SE CONFIGURADO)
   const WEBHOOK_URL = process.env.LEADS_WEBHOOK_URL;
   if (WEBHOOK_URL) {
     try {
@@ -33,11 +33,14 @@ export default async function handler(req, res) {
     } catch (ignore) {}
   }
 
-  // 2. CONSULTA ÀS IAs
-  const OPENAI_KEY = process.env.OPENAI_API_KEY;
+  // 2. CONSULTA AO GOOGLE GEMINI
   const GEMINI_KEY = process.env.GEMINI_API_KEY;
 
-  const prompt = `Atue como um morador da cidade de ${city}. Preciso com urgência de recomendação dos 3 melhores locais de ${niche}. Liste apenas os nomes dos estabelecimentos recomendados e os seus diferenciais. Seja direto e objetivo.`;
+  if (!GEMINI_KEY) {
+    return res.status(500).json({ error: 'Chave GEMINI_API_KEY não encontrada nas variáveis de ambiente da Vercel.' });
+  }
+
+  const prompt = `Atue como um morador da cidade de ${city}. Preciso com urgência de recomendação dos melhores locais de ${niche} no município. Liste os nomes dos estabelecimentos recomendados e explique sucintamente os diferenciais de cada um. Seja direto e objetivo.`;
 
   const checkPresence = (text, target) => {
     if (!text) return false;
@@ -46,51 +49,38 @@ export default async function handler(req, res) {
     return cleanText.includes(cleanTarget);
   };
 
-  const fetchChatGPT = async () => {
-    if (!OPENAI_KEY) return { text: "Chave OpenAI não configurada nas variáveis.", mentioned: false };
-    try {
-      const response = await fetch("https://api.openai.com/v1/chat/completions", {
-        method: "POST",
-        headers: { "Content-Type": "application/json", "Authorization": `Bearer ${OPENAI_KEY}` },
-        body: JSON.stringify({
-          model: "gpt-4o-mini",
-          messages: [{ role: "user", content: prompt }],
-          temperature: 0.3
-        })
-      });
-      const data = await response.json();
-      const output = data.choices?.[0]?.message?.content || "Sem resposta do ChatGPT.";
-      return { text: output, mentioned: checkPresence(output, businessName) };
-    } catch (err) {
-      return { text: "Falha ChatGPT: " + err.message, mentioned: false };
-    }
-  };
-
-  const fetchGemini = async () => {
-    if (!GEMINI_KEY) return { text: "Chave Gemini não configurada nas variáveis.", mentioned: false };
-    try {
-      const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_KEY}`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
-      });
-      const data = await response.json();
-      const output = data.candidates?.[0]?.content?.parts?.[0]?.text || "Sem resposta do Gemini.";
-      return { text: output, mentioned: checkPresence(output, businessName) };
-    } catch (err) {
-      return { text: "Falha Gemini: " + err.message, mentioned: false };
-    }
-  };
-
   try {
-    const [chatgptResult, geminiResult] = await Promise.all([fetchChatGPT(), fetchGemini()]);
+    const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_KEY}`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        contents: [{ parts: [{ text: prompt }] }],
+        generationConfig: {
+          temperature: 0.3,
+          maxOutputTokens: 800
+        }
+      })
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      const errMsg = data.error?.message || "Erro na API do Gemini";
+      return res.status(500).json({ error: `Falha no Gemini: ${errMsg}` });
+    }
+
+    const output = data.candidates?.[0]?.content?.parts?.[0]?.text || "Sem retorno de texto do Gemini.";
+    const isMentioned = checkPresence(output, businessName);
+
     return res.status(200).json({
       promptUtilizado: prompt,
-      chatgpt: chatgptResult,
-      gemini: geminiResult,
+      gemini: {
+        text: output,
+        mentioned: isMentioned
+      },
       lead: { businessName, city, niche, phone, email }
     });
-  } catch (error) {
-    return res.status(500).json({ error: "Erro interno no servidor de auditoria." });
+  } catch (err) {
+    return res.status(500).json({ error: "Erro interno no servidor de varredura: " + err.message });
   }
 }
