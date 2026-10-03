@@ -1,189 +1,172 @@
-<!-- TELA 1: ENTRADA -->
-  <section id="screen-1" class="text-center space-y-8 py-8">
-    <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-cyan-500/10 border border-cyan-500/30 text-cyan-400 text-xs sm:text-sm font-semibold tracking-wide uppercase">
-      <i class="fa-solid fa-microchip"></i> Verificação de Visibilidade em IA
+main { flex: 1; display: flex; align-items: center; justify-content: center; padding: 24px; }
+.container { width: 100%; max-width: 760px; }
+
+.step-box { display: none; animation: fadeIn 0.3s ease; }
+.step-box.active { display: block; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+/* TELA 1 */
+.hero { text-align: center; }
+.tag { display: inline-block; background: rgba(6,182,212,0.1); border: 1px solid rgba(6,182,212,0.3); color: #22d3ee; font-size: 0.8rem; font-weight: 700; padding: 6px 16px; border-radius: 999px; text-transform: uppercase; margin-bottom: 20px; }
+h1 { font-size: 2.5rem; font-weight: 900; line-height: 1.2; margin-bottom: 24px; }
+h1 span { background: linear-gradient(90deg, #ef4444, #f59e0b); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+.bullets { display: flex; flex-direction: column; gap: 12px; margin-bottom: 32px; max-width: 580px; margin-left: auto; margin-right: auto; }
+.bullet-item { background: #111827; border: 1px solid #1f2937; padding: 14px 20px; border-radius: 12px; font-size: 0.95rem; text-align: left; display: flex; align-items: center; gap: 12px; color: #d1d5db; }
+.bullet-item span { color: #06b6d4; font-weight: 700; }
+
+.btn-primary { width: 100%; max-width: 480px; padding: 18px 24px; background: linear-gradient(90deg, #06b6d4, #2563eb); border: none; border-radius: 14px; color: #030712; font-weight: 900; font-size: 1.1rem; cursor: pointer; transition: transform 0.2s, box-shadow 0.2s; box-shadow: 0 10px 25px rgba(6,182,212,0.3); text-decoration: none; display: inline-block; text-align: center; }
+.btn-primary:hover { transform: scale(1.02); }
+.hint { font-size: 0.75rem; color: #6b7280; margin-top: 10px; }
+
+/* TELA 2 */
+.card { background: #111827; border: 1px solid #1f2937; border-radius: 20px; padding: 32px; box-shadow: 0 20px 40px rgba(0,0,0,0.5); }
+.card h2 { font-size: 1.6rem; font-weight: 800; text-align: center; margin-bottom: 8px; }
+.card p.sub { font-size: 0.85rem; color: #9ca3af; text-align: center; margin-bottom: 24px; }
+.form-group { margin-bottom: 16px; }
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+@media (max-width: 600px) { .form-row { grid-template-columns: 1fr; } h1 { font-size: 1.8rem; } }
+label { display: block; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; color: #9ca3af; margin-bottom: 6px; }
+input { width: 100%; background: #030712; border: 1px solid #374151; padding: 14px 16px; border-radius: 10px; color: #fff; font-size: 0.9rem; outline: none; }
+input:focus { border-color: #06b6d4; }
+.btn-submit { width: 100%; padding: 16px; background: #10b981; border: none; border-radius: 12px; color: #030712; font-weight: 900; font-size: 1rem; cursor: pointer; margin-top: 12px; }
+.btn-back { display: block; text-align: center; font-size: 0.8rem; color: #6b7280; margin-top: 12px; cursor: pointer; background: none; border: none; width: 100%; }
+
+/* TELA CARREGAMENTO */
+.radar { text-align: center; padding: 40px 20px; }
+.spinner { width: 70px; height: 70px; border: 4px solid rgba(6,182,212,0.2); border-top-color: #06b6d4; border-radius: 50%; animation: spin 1s infinite linear; margin: 0 auto 24px; }
+@keyframes spin { 100% { transform: rotate(360deg); } }
+.progress-track { width: 100%; background: #1f2937; height: 8px; border-radius: 999px; overflow: hidden; margin-top: 20px; }
+.progress-bar { width: 0%; height: 100%; background: linear-gradient(90deg, #06b6d4, #3b82f6); transition: width 0.4s ease; }
+
+/* TELA 3 */
+.status-banner { border-radius: 16px; padding: 20px; margin-bottom: 24px; display: flex; align-items: center; justify-content: space-between; border: 1px solid #ef4444; background: rgba(239,68,68,0.1); }
+.status-banner h3 { font-size: 1.1rem; color: #f87171; font-weight: 800; }
+.status-banner p { font-size: 0.8rem; color: #d1d5db; margin-top: 4px; }
+.pill-red { background: rgba(239,68,68,0.2); border: 1px solid #ef4444; color: #fca5a5; font-size: 0.75rem; font-weight: 800; padding: 6px 12px; border-radius: 8px; text-transform: uppercase; }
+
+.ai-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 24px; }
+@media (max-width: 680px) { .ai-grid { grid-template-columns: 1fr; } }
+.ai-card { background: #111827; border: 1px solid #1f2937; border-radius: 16px; padding: 20px; }
+.ai-card-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #1f2937; padding-bottom: 12px; margin-bottom: 12px; }
+.ai-title { font-weight: 800; font-size: 0.95rem; }
+.ai-model { font-size: 0.7rem; color: #6b7280; }
+.badge-result { font-size: 0.7rem; font-weight: 700; padding: 4px 8px; border-radius: 6px; }
+.badge-omitted { background: rgba(239,68,68,0.15); color: #f87171; border: 1px solid rgba(239,68,68,0.3); }
+.badge-cited { background: rgba(16,185,129,0.15); color: #34d399; border: 1px solid rgba(16,185,129,0.3); }
+.terminal-box { background: #030712; border: 1px solid #1f2937; border-radius: 10px; padding: 12px; font-size: 0.75rem; color: #9ca3af; max-height: 180px; overflow-y: auto; white-space: pre-wrap; font-family: monospace; line-height: 1.4; }
+
+.cta-card { background: linear-gradient(180deg, #111827, #0b0f17); border: 1px solid #1f2937; border-radius: 20px; padding: 32px 24px; text-align: center; }
+.cta-card h4 { font-size: 1.3rem; font-weight: 800; margin-bottom: 8px; }
+.cta-card p { font-size: 0.85rem; color: #9ca3af; max-width: 520px; margin: 0 auto 20px; }
+
+footer { border-top: 1px solid #111827; text-align: center; padding: 16px; font-size: 0.75rem; color: #4b5563; }
+  <!-- TELA 1: ENTRADA -->
+  <section id="step-1" class="step-box active hero">
+    <div class="tag">Varredura de Presença em IA</div>
+    <h1>Sua Empresa é um <br><span>FANTASMA PARA AS IAs?</span></h1>
+    
+    <div class="bullets">
+      <div class="bullet-item"><span>?</span> O <strong>ChatGPT</strong> recomenda seu comércio ou aponta o concorrente?</div>
+      <div class="bullet-item"><span>?</span> O <strong>Google Gemini</strong> encontra o seu catálogo na sua cidade?</div>
+      <div class="bullet-item"><span>?</span> As IAs sabem onde fica seu endereço comercial?</div>
     </div>
 
-    <h1 class="text-3xl sm:text-5xl lg:text-6xl font-black text-white tracking-tight leading-tight">
-      Sua Empresa é um <br>
-      <span class="text-transparent bg-clip-text bg-gradient-to-r from-red-500 via-amber-400 to-rose-500">
-        FANTASMA PARA AS IAs?
-      </span>
-    </h1>
-
-    <div class="max-w-2xl mx-auto space-y-3.5 text-slate-300 text-base sm:text-lg">
-      <div class="p-3 bg-slate-900/60 rounded-xl border border-slate-800 flex items-center justify-center gap-3">
-        <i class="fa-solid fa-circle-question text-cyan-400"></i>
-        <span>O <strong>ChatGPT</strong> recomenda o seu comércio ou indica o seu concorrente?</span>
-      </div>
-      <div class="p-3 bg-slate-900/60 rounded-xl border border-slate-800 flex items-center justify-center gap-3">
-        <i class="fa-solid fa-circle-question text-cyan-400"></i>
-        <span>O <strong>Google Gemini</strong> encontra a sua localização e o seu catálogo?</span>
-      </div>
-      <div class="p-3 bg-slate-900/60 rounded-xl border border-slate-800 flex items-center justify-center gap-3">
-        <i class="fa-solid fa-circle-question text-cyan-400"></i>
-        <span>O <strong>Perplexity</strong> sabe que a sua loja existe no seu bairro?</span>
-      </div>
-    </div>
-
-    <div class="pt-4 max-w-lg mx-auto">
-      <button onclick="changeScreen(2)" class="pulse-action w-full py-5 px-8 bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-slate-950 font-black text-lg sm:text-xl rounded-2xl shadow-xl shadow-cyan-500/20 transition duration-300 flex items-center justify-center gap-3 cursor-pointer">
-        <i class="fa-solid fa-bolt text-xl"></i> QUERO AVALIAR MINHA EMPRESA AGORA
-      </button>
-      <p class="text-xs text-slate-500 mt-3 font-mono">Consulta direta aos motores neurais • Sem custos</p>
+    <div>
+      <button onclick="goToStep(2)" class="btn-primary">QUERO AVALIAR MINHA EMPRESA AGORA</button>
+      <div class="hint">Consulta neural em tempo real • Totalmente confidencial</div>
     </div>
   </section>
 
   <!-- TELA 2: FORMULARIO -->
-  <section id="screen-2" class="hidden max-w-xl mx-auto bg-slate-900/95 border border-slate-800 rounded-3xl p-6 sm:p-10 shadow-2xl backdrop-blur-md">
-    <div class="text-center mb-6">
-      <h2 class="text-2xl font-black text-white tracking-tight">Dados para Auditoria Algorítmica</h2>
-      <p class="text-xs text-slate-400 mt-1">Preencha as informações para construirmos o prompt de varredura neuronal.</p>
-    </div>
+  <section id="step-2" class="step-box card">
+    <h2>Dados para a Varredura</h2>
+    <p class="sub">Construiremos o prompt com sua geolocalização e nicho para testar os motores.</p>
 
-    <form id="auditForm" onsubmit="executeLiveAudit(event)" class="space-y-4">
-      <div>
-        <label class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1">Nome Comercial da Empresa</label>
-        <div class="relative">
-          <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center text-slate-500"><i class="fa-solid fa-store"></i></span>
-          <input type="text" id="businessName" required placeholder="Ex: Auto Mecânica Central" class="w-full pl-10 pr-4 py-3.5 bg-slate-950 border border-slate-700/80 rounded-xl text-white placeholder-slate-500 focus:outline-none focus:border-cyan-400 text-sm">
+    <form id="scannerForm" onsubmit="runScanner(event)">
+      <div class="form-group">
+        <label>Nome Comercial da Empresa</label>
+        <input type="text" id="businessName" required placeholder="Ex: Auto Mecânica Central">
+      </div>
+
+      <div class="form-row form-group">
+        <div>
+          <label>Cidade e UF</label>
+          <input type="text" id="city" required placeholder="Ex: Matão - SP">
+        </div>
+        <div>
+          <label>Segmento / Serviço</label>
+          <input type="text" id="niche" required placeholder="Ex: Oficina Mecânica">
         </div>
       </div>
 
-      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+      <div class="form-row form-group">
         <div>
-          <label class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1">Cidade e UF</label>
-          <div class="relative">
-            <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center text-slate-500"><i class="fa-solid fa-location-dot"></i></span>
-            <input type="text" id="city" required placeholder="Ex: Matão - SP" class="w-full pl-10 pr-4 py-3.5 bg-slate-950 border border-slate-700/80 rounded-xl text-white placeholder-slate-500 focus:outline-none focus:border-cyan-400 text-sm">
-          </div>
+          <label>WhatsApp</label>
+          <input type="tel" id="phone" required placeholder="(16) 99999-9999">
         </div>
-
         <div>
-          <label class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1">Segmento / Serviço</label>
-          <div class="relative">
-            <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center text-slate-500"><i class="fa-solid fa-wrench"></i></span>
-            <input type="text" id="niche" required placeholder="Ex: Oficina Mecânica" class="w-full pl-10 pr-4 py-3.5 bg-slate-950 border border-slate-700/80 rounded-xl text-white placeholder-slate-500 focus:outline-none focus:border-cyan-400 text-sm">
-          </div>
+          <label>E-mail Comercial</label>
+          <input type="email" id="email" required placeholder="comercial@empresa.com">
         </div>
       </div>
 
-      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        <div>
-          <label class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1">WhatsApp de Contato</label>
-          <div class="relative">
-            <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center text-slate-500"><i class="fa-brands fa-whatsapp"></i></span>
-            <input type="tel" id="phone" required placeholder="(00) 00000-0000" class="w-full pl-10 pr-4 py-3.5 bg-slate-950 border border-slate-700/80 rounded-xl text-white placeholder-slate-500 focus:outline-none focus:border-cyan-400 text-sm">
-          </div>
-        </div>
-
-        <div>
-          <label class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1">E-mail para Envio do Laudo</label>
-          <div class="relative">
-            <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center text-slate-500"><i class="fa-solid fa-envelope"></i></span>
-            <input type="email" id="email" required placeholder="seu@email.com" class="w-full pl-10 pr-4 py-3.5 bg-slate-950 border border-slate-700/80 rounded-xl text-white placeholder-slate-500 focus:outline-none focus:border-cyan-400 text-sm">
-          </div>
-        </div>
-      </div>
-
-      <button type="submit" class="w-full mt-4 py-4 px-6 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black text-lg rounded-xl shadow-lg shadow-emerald-500/20 flex items-center justify-center gap-2 transition duration-200 cursor-pointer">
-        <i class="fa-solid fa-play"></i> EXECUTAR SCANNER GRATUITO
-      </button>
-
-      <button type="button" onclick="changeScreen(1)" class="w-full text-xs text-slate-500 hover:text-slate-400 text-center py-1 transition">
-        ← Voltar para o início
-      </button>
+      <button type="submit" class="btn-submit">EXECUTAR SCANNER NEURAL AGORA</button>
+      <button type="button" onclick="goToStep(1)" class="btn-back">← Voltar</button>
     </form>
   </section>
 
-  <!-- TELA DE TRANSIÇÃO (RADAR ATIVO) -->
-  <section id="screen-loading" class="hidden max-w-lg mx-auto text-center py-16 space-y-6">
-    <div class="relative w-24 h-24 mx-auto">
-      <div class="absolute inset-0 rounded-full border-4 border-cyan-500/20 animate-ping"></div>
-      <div class="relative w-24 h-24 rounded-full border-4 border-cyan-400 border-t-transparent animate-spin flex items-center justify-center">
-        <i class="fa-solid fa-brain text-cyan-400 text-2xl"></i>
-      </div>
-    </div>
-
-    <div>
-      <h3 id="loadingTitle" class="text-xl font-bold text-white">Disparando prompts em tempo real...</h3>
-      <p id="loadingDesc" class="text-xs font-mono text-slate-400 mt-2">Consultando OpenAI e Google Gemini em simultâneo...</p>
-    </div>
-
-    <div class="w-full bg-slate-900 border border-slate-800 rounded-full h-2.5 overflow-hidden">
-      <div id="loadingBar" class="bg-gradient-to-r from-cyan-400 to-blue-500 h-full w-0 transition-all duration-300"></div>
+  <!-- TELA CARREGANDO -->
+  <section id="step-loading" class="step-box card radar">
+    <div class="spinner"></div>
+    <h3 id="loadingText" style="font-size: 1.2rem; font-weight: 700;">Consultando modelos neurais...</h3>
+    <p style="font-size: 0.8rem; color: #9ca3af; margin-top: 6px;">Interrogando OpenAI GPT e Google Gemini com contexto local...</p>
+    <div class="progress-track">
+      <div id="bar" class="progress-bar"></div>
     </div>
   </section>
 
-  <!-- TELA 3: RESULTADO DIVIDIDO MEIO A MEIO -->
-  <section id="screen-3" class="hidden space-y-6">
-    <div id="generalBanner" class="p-5 rounded-2xl border flex flex-col sm:flex-row items-center justify-between gap-4 text-center sm:text-left">
-      <div class="flex items-center gap-4">
-        <div id="statusIcon" class="w-12 h-12 rounded-xl flex items-center justify-center text-2xl shrink-0"></div>
-        <div>
-          <h3 id="statusTitle" class="text-lg font-bold"></h3>
-          <p id="statusSubtitle" class="text-xs text-slate-300 mt-0.5"></p>
-        </div>
+  <!-- TELA 3: RESULTADOS -->
+  <section id="step-3" class="step-box">
+    <div id="statusBanner" class="status-banner">
+      <div>
+        <h3 id="statusTitle">STATUS: EMPRESA INVISÍVEL PARA OS MOTORES</h3>
+        <p id="statusDesc">Nenhuma das IAs recomendou seu estabelecimento no seu município.</p>
       </div>
-      <span id="badgeGeneral" class="px-3 py-1 text-xs font-mono uppercase font-bold rounded-lg border"></span>
+      <div id="statusPill" class="pill-red">0 Menções</div>
     </div>
 
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+    <div class="ai-grid">
       <!-- CHATGPT -->
-      <div class="bg-slate-900/95 border border-slate-800 rounded-2xl p-5 flex flex-col justify-between shadow-xl">
-        <div>
-          <div class="flex items-center justify-between border-b border-slate-800 pb-3 mb-4">
-            <div class="flex items-center gap-2.5">
-              <div class="w-8 h-8 rounded-lg bg-emerald-500/20 text-emerald-400 flex items-center justify-center text-lg">
-                <i class="fa-solid fa-robot"></i>
-              </div>
-              <div>
-                <h4 class="font-bold text-sm text-white">OpenAI ChatGPT</h4>
-                <span class="text-[10px] text-slate-400 font-mono">Modelo GPT-4o-mini</span>
-              </div>
-            </div>
-            <span id="badgeChatGPT" class="px-2.5 py-1 text-xs rounded-md border font-semibold flex items-center gap-1"></span>
+      <div class="ai-card">
+        <div class="ai-card-header">
+          <div>
+            <div class="ai-title">OpenAI ChatGPT</div>
+            <div class="ai-model">GPT-4o-mini</div>
           </div>
-          <div class="text-[11px] font-mono text-slate-400 mb-1">Prompt enviado ao modelo:</div>
-          <div id="chatgptPrompt" class="p-3 bg-slate-950 rounded-lg border border-slate-850 text-xs text-slate-300 italic mb-4"></div>
-          <div class="text-[11px] font-mono text-slate-400 mb-1">Resposta autêntica do modelo:</div>
-          <div id="chatgptOutput" class="p-4 bg-slate-950/80 rounded-xl border border-slate-850 text-xs text-slate-300 leading-relaxed max-h-60 overflow-y-auto whitespace-pre-wrap"></div>
+          <div id="badgeGpt" class="badge-result badge-omitted">Omitido</div>
         </div>
+        <label style="font-size:0.65rem;">Resposta em Tempo Real:</label>
+        <div id="outGpt" class="terminal-box">Carregando...</div>
       </div>
 
       <!-- GEMINI -->
-      <div class="bg-slate-900/95 border border-slate-800 rounded-2xl p-5 flex flex-col justify-between shadow-xl">
-        <div>
-          <div class="flex items-center justify-between border-b border-slate-800 pb-3 mb-4">
-            <div class="flex items-center gap-2.5">
-              <div class="w-8 h-8 rounded-lg bg-blue-500/20 text-blue-400 flex items-center justify-center text-lg">
-                <i class="fa-solid fa-wand-magic-sparkles"></i>
-              </div>
-              <div>
-                <h4 class="font-bold text-sm text-white">Google Gemini</h4>
-                <span class="text-[10px] text-slate-400 font-mono">Gemini 1.5 Flash</span>
-              </div>
-            </div>
-            <span id="badgeGemini" class="px-2.5 py-1 text-xs rounded-md border font-semibold flex items-center gap-1"></span>
+      <div class="ai-card">
+        <div class="ai-card-header">
+          <div>
+            <div class="ai-title">Google Gemini</div>
+            <div class="ai-model">Gemini 1.5 Flash</div>
           </div>
-          <div class="text-[11px] font-mono text-slate-400 mb-1">Prompt enviado ao modelo:</div>
-          <div id="geminiPrompt" class="p-3 bg-slate-950 rounded-lg border border-slate-850 text-xs text-slate-300 italic mb-4"></div>
-          <div class="text-[11px] font-mono text-slate-400 mb-1">Resposta autêntica do modelo:</div>
-          <div id="geminiOutput" class="p-4 bg-slate-950/80 rounded-xl border border-slate-850 text-xs text-slate-300 leading-relaxed max-h-60 overflow-y-auto whitespace-pre-wrap"></div>
+          <div id="badgeGemini" class="badge-result badge-omitted">Omitido</div>
         </div>
+        <label style="font-size:0.65rem;">Resposta em Tempo Real:</label>
+        <div id="outGemini" class="terminal-box">Carregando...</div>
       </div>
     </div>
 
-    <div class="bg-gradient-to-b from-slate-900 to-slate-950 border border-slate-800 rounded-3xl p-6 sm:p-8 text-center space-y-4 shadow-2xl">
-      <h4 class="text-xl sm:text-2xl font-black text-white">Quer que o seu comércio passe a ser a recomendação #1 dessas IAs?</h4>
-      <p class="text-xs sm:text-sm text-slate-400 max-w-xl mx-auto">
-        Existe uma estrutura canônica baseada em <strong>Schema.org</strong> e <strong>GEO</strong> que força os algoritmos a reconhecerem a sua empresa na sua cidade.
-      </p>
-      <div class="max-w-lg mx-auto pt-2">
-        <a id="btnToVSL" href="vsl.html" class="pulse-action block w-full py-5 px-6 bg-gradient-to-r from-emerald-500 via-teal-500 to-cyan-500 text-slate-950 font-black text-lg sm:text-xl rounded-2xl shadow-xl shadow-emerald-500/20 uppercase text-center">
-          <i class="fa-solid fa-circle-play mr-2"></i> VER COMO DESTRAVAR MINHA EMPRESA
-        </a>
-      </div>
+    <div class="cta-card">
+      <h4>Quer blindar sua empresa e se tornar o #1 indicado nas IAs?</h4>
+      <p>Existe um protocolo canónico estruturado em GEO que injeta os seus dados diretamente no grafo de conhecimento dos modelos.</p>
+      <a id="btnNext" href="#" class="btn-primary" style="display:block; margin: 0 auto;">DESTRAVAR MEU ESTABELECIMENTO AGORA</a>
     </div>
   </section>
 
