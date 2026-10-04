@@ -3,48 +3,52 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Auditor GEO - Análise Algorítmica</title>
+  <title>Auditor GEO • Varredura de Entidades Locais</title>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
     body { background-color: #030712; color: #f3f4f6; min-height: 100vh; display: flex; flex-direction: column; justify-content: space-between; }
-    header { background: #111827; border-bottom: 1px solid #1f2937; padding: 16px 24px; display: flex; justify-content: space-between; align-items: center; }
+    header { background: #0b0f19; border-bottom: 1px solid #1f2937; padding: 16px 24px; display: flex; justify-content: space-between; align-items: center; }
     .brand { font-weight: 900; font-size: 1.1rem; letter-spacing: 1px; color: #fff; display: flex; align-items: center; gap: 8px; }
     .brand span { color: #06b6d4; }
     .dot { width: 10px; height: 10px; background: #06b6d4; border-radius: 50%; box-shadow: 0 0 10px #06b6d4; }
-    .status-pill { font-size: 0.75rem; background: #030712; border: 1px solid #374151; padding: 6px 12px; border-radius: 999px; color: #9ca3af; }
+    .status-pill { font-size: 0.75rem; background: #030712; border: 1px solid #374151; padding: 6px 14px; border-radius: 999px; color: #9ca3af; }
     .status-pill strong { color: #10b981; }
 
     main { flex: 1; display: flex; align-items: center; justify-content: center; padding: 24px; }
-    .container { width: 100%; max-width: 760px; }
+    .container { width: 100%; max-width: 960px; }
 
     .step-box { display: none; animation: fadeIn 0.3s ease; }
     .step-box.active { display: block; }
-    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
 
-    /* TELA 1 */
-    .hero { text-align: center; }
+    /* TELA 1: HERO */
+    .hero { text-align: center; max-width: 760px; margin: 0 auto; }
     .tag { display: inline-block; background: rgba(6,182,212,0.1); border: 1px solid rgba(6,182,212,0.3); color: #22d3ee; font-size: 0.8rem; font-weight: 700; padding: 6px 16px; border-radius: 999px; text-transform: uppercase; margin-bottom: 20px; }
     h1 { font-size: 2.5rem; font-weight: 900; line-height: 1.2; margin-bottom: 24px; }
     h1 span { background: linear-gradient(90deg, #ef4444, #f59e0b); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-    .bullets { display: flex; flex-direction: column; gap: 12px; margin-bottom: 32px; max-width: 580px; margin-left: auto; margin-right: auto; }
-    .bullet-item { background: #111827; border: 1px solid #1f2937; padding: 14px 20px; border-radius: 12px; font-size: 0.95rem; text-align: left; display: flex; align-items: center; gap: 12px; color: #d1d5db; }
-    .bullet-item span { color: #06b6d4; font-weight: 700; }
+    .bullets { display: flex; flex-direction: column; gap: 12px; margin-bottom: 32px; max-width: 620px; margin-left: auto; margin-right: auto; }
+    .bullet-item { background: #0b0f19; border: 1px solid #1f2937; padding: 14px 20px; border-radius: 12px; font-size: 0.95rem; text-align: left; display: flex; align-items: center; gap: 12px; color: #d1d5db; }
+    .bullet-item span { color: #06b6d4; font-weight: 800; font-size: 1.1rem; }
 
     .btn-primary { width: 100%; max-width: 480px; padding: 18px 24px; background: linear-gradient(90deg, #06b6d4, #2563eb); border: none; border-radius: 14px; color: #030712; font-weight: 900; font-size: 1.1rem; cursor: pointer; transition: transform 0.2s, box-shadow 0.2s; box-shadow: 0 10px 25px rgba(6,182,212,0.3); text-decoration: none; display: inline-block; text-align: center; }
     .btn-primary:hover { transform: scale(1.02); }
     .hint { font-size: 0.75rem; color: #6b7280; margin-top: 10px; }
 
-    /* TELA 2 */
-    .card { background: #111827; border: 1px solid #1f2937; border-radius: 20px; padding: 32px; box-shadow: 0 20px 40px rgba(0,0,0,0.5); }
-    .card h2 { font-size: 1.6rem; font-weight: 800; text-align: center; margin-bottom: 8px; }
+    /* TELA 2: FORMULARIO CLARO E HUMANIZADO */
+    .card { background: #0b0f19; border: 1px solid #1f2937; border-radius: 20px; padding: 32px; box-shadow: 0 20px 40px rgba(0,0,0,0.5); max-width: 700px; margin: 0 auto; }
+    .card h2 { font-size: 1.6rem; font-weight: 800; text-align: center; margin-bottom: 6px; }
     .card p.sub { font-size: 0.85rem; color: #9ca3af; text-align: center; margin-bottom: 24px; }
-    .form-group { margin-bottom: 16px; }
-    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    
+    .section-divider { border-top: 1px solid #1f2937; padding-top: 18px; margin-top: 20px; margin-bottom: 16px; }
+    .section-title { font-size: 0.8rem; font-weight: 800; text-transform: uppercase; color: #06b6d4; letter-spacing: 0.5px; margin-bottom: 14px; display: flex; align-items: center; gap: 8px; }
+
+    .form-group { margin-bottom: 14px; }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
     @media (max-width: 600px) { .form-row { grid-template-columns: 1fr; } h1 { font-size: 1.8rem; } }
     label { display: block; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; color: #9ca3af; margin-bottom: 6px; }
-    input { width: 100%; background: #030712; border: 1px solid #374151; padding: 14px 16px; border-radius: 10px; color: #fff; font-size: 0.9rem; outline: none; }
+    input { width: 100%; background: #030712; border: 1px solid #374151; padding: 13px 16px; border-radius: 10px; color: #fff; font-size: 0.9rem; outline: none; }
     input:focus { border-color: #06b6d4; }
-    .btn-submit { width: 100%; padding: 16px; background: #10b981; border: none; border-radius: 12px; color: #030712; font-weight: 900; font-size: 1rem; cursor: pointer; margin-top: 12px; }
+    .btn-submit { width: 100%; padding: 16px; background: #10b981; border: none; border-radius: 12px; color: #030712; font-weight: 900; font-size: 1rem; cursor: pointer; margin-top: 16px; }
     .btn-back { display: block; text-align: center; font-size: 0.8rem; color: #6b7280; margin-top: 12px; cursor: pointer; background: none; border: none; width: 100%; }
 
     /* TELA CARREGAMENTO */
@@ -54,24 +58,40 @@
     .progress-track { width: 100%; background: #1f2937; height: 8px; border-radius: 999px; overflow: hidden; margin-top: 20px; }
     .progress-bar { width: 0%; height: 100%; background: linear-gradient(90deg, #06b6d4, #3b82f6); transition: width 0.4s ease; }
 
-    /* TELA 3 */
+    /* TELA 3: RESULTADOS (GEMINI + MOCKUP SMARTPHONE LADO A LADO) */
     .status-banner { border-radius: 16px; padding: 20px; margin-bottom: 24px; display: flex; align-items: center; justify-content: space-between; border: 1px solid #ef4444; background: rgba(239,68,68,0.1); }
-    .status-banner h3 { font-size: 1.1rem; color: #f87171; font-weight: 800; }
-    .status-banner p { font-size: 0.8rem; color: #d1d5db; margin-top: 4px; }
+    .status-banner h3 { font-size: 1.15rem; color: #f87171; font-weight: 800; }
+    .status-banner p { font-size: 0.85rem; color: #d1d5db; margin-top: 4px; }
     .pill-red { background: rgba(239,68,68,0.2); border: 1px solid #ef4444; color: #fca5a5; font-size: 0.75rem; font-weight: 800; padding: 6px 12px; border-radius: 8px; text-transform: uppercase; }
 
-    .ai-card-single { background: #111827; border: 1px solid #1f2937; border-radius: 16px; padding: 24px; margin-bottom: 24px; }
-    .ai-card-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #1f2937; padding-bottom: 14px; margin-bottom: 14px; }
+    .split-grid { display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 24px; margin-bottom: 28px; align-items: start; }
+    @media (max-width: 820px) { .split-grid { grid-template-columns: 1fr; } }
+
+    /* LADO ESQUERDO: GEMINI RESPOSTA NEURAL */
+    .ai-card { background: #0b0f19; border: 1px solid #1f2937; border-radius: 18px; padding: 24px; }
+    .ai-card-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #1f2937; padding-bottom: 14px; margin-bottom: 16px; }
     .ai-title { font-weight: 800; font-size: 1.1rem; display: flex; align-items: center; gap: 8px; }
     .ai-model { font-size: 0.75rem; color: #6b7280; }
     .badge-result { font-size: 0.75rem; font-weight: 700; padding: 6px 12px; border-radius: 6px; }
     .badge-omitted { background: rgba(239,68,68,0.15); color: #f87171; border: 1px solid rgba(239,68,68,0.3); }
     .badge-cited { background: rgba(16,185,129,0.15); color: #34d399; border: 1px solid rgba(16,185,129,0.3); }
-    .terminal-box { background: #030712; border: 1px solid #1f2937; border-radius: 10px; padding: 16px; font-size: 0.85rem; color: #d1d5db; max-height: 260px; overflow-y: auto; white-space: pre-wrap; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; line-height: 1.6; }
+    .gemini-response-box { background: #030712; border: 1px solid #1f2937; border-radius: 12px; padding: 18px; font-size: 0.85rem; color: #e5e7eb; max-height: 420px; overflow-y: auto; white-space: pre-wrap; line-height: 1.6; }
 
-    .cta-card { background: linear-gradient(180deg, #111827, #0b0f17); border: 1px solid #1f2937; border-radius: 20px; padding: 32px 24px; text-align: center; }
+    /* LADO DIREITO: MOCKUP SMARTPHONE (EFEITO VISUAL DE CELULAR) */
+    .phone-mockup { background: #000; border: 3px solid #374151; border-radius: 36px; padding: 16px 12px; box-shadow: 0 20px 40px rgba(0,0,0,0.8); max-width: 320px; margin: 0 auto; position: relative; }
+    .phone-notch { width: 90px; height: 16px; background: #1f2937; border-radius: 0 0 12px 12px; margin: -16px auto 14px auto; }
+    .phone-screen { background: #111827; border-radius: 22px; padding: 16px 12px; min-height: 380px; display: flex; flex-direction: column; justify-content: space-between; }
+    .phone-search-bar { background: #1f2937; border-radius: 20px; padding: 8px 12px; font-size: 0.7rem; color: #9ca3af; display: flex; align-items: center; gap: 6px; margin-bottom: 12px; }
+    .phone-ai-bubble { background: #1e293b; border-left: 3px solid #06b6d4; padding: 10px; border-radius: 8px; font-size: 0.72rem; color: #cbd5e1; margin-bottom: 10px; line-height: 1.4; }
+    .phone-ai-bubble strong { color: #38bdf8; }
+    .phone-competitor-list { background: #030712; border: 1px solid #1f2937; border-radius: 10px; padding: 8px; margin-bottom: 10px; }
+    .phone-competitor-item { font-size: 0.7rem; padding: 6px 4px; border-bottom: 1px solid #1f2937; display: flex; justify-content: space-between; align-items: center; }
+    .phone-competitor-item:last-child { border-bottom: none; }
+    .phone-alert { background: rgba(239,68,68,0.15); border: 1px dashed #ef4444; border-radius: 8px; padding: 8px; text-align: center; font-size: 0.68rem; color: #fca5a5; font-weight: 700; }
+
+    .cta-card { background: linear-gradient(180deg, #0b0f19, #030712); border: 1px solid #1f2937; border-radius: 20px; padding: 32px 24px; text-align: center; }
     .cta-card h4 { font-size: 1.3rem; font-weight: 800; margin-bottom: 8px; }
-    .cta-card p { font-size: 0.85rem; color: #9ca3af; max-width: 520px; margin: 0 auto 20px; }
+    .cta-card p { font-size: 0.85rem; color: #9ca3af; max-width: 540px; margin: 0 auto 20px; }
 
     footer { border-top: 1px solid #111827; text-align: center; padding: 16px; font-size: 0.75rem; color: #4b5563; }
   </style>
@@ -83,7 +103,7 @@
       <div class="dot"></div>
       AUDITOR<span>GEO</span>
     </div>
-    <div class="status-pill">Motor: <strong>Google Gemini Ativo</strong></div>
+    <div class="status-pill">Motor: <strong>Google Gemini em Tempo Real</strong></div>
   </header>
 
   <main>
@@ -91,30 +111,33 @@
 
       <!-- TELA 1: IMPACTO -->
       <section id="step-1" class="step-box active hero">
-        <div class="tag">Varredura de Presença em IA</div>
+        <div class="tag">Varredura de Presença Algorítmica</div>
         <h1>Sua Empresa é um <br><span>FANTASMA PARA AS IAs?</span></h1>
         
         <div class="bullets">
-          <div class="bullet-item"><span>?</span> O <strong>Google Gemini</strong> encontra a sua localização e o seu catálogo?</div>
-          <div class="bullet-item"><span>?</span> As IAs do ecossistema Google recomendam seu concorrente no bairro?</div>
-          <div class="bullet-item"><span>?</span> Sua empresa existe para quem pesquisa por voz e IA no smartphone?</div>
+          <div class="bullet-item"><span>?</span> O <strong>Google Gemini</strong> recomenda o seu comércio ou indica o seu concorrente?</div>
+          <div class="bullet-item"><span>?</span> A IA encontra seu endereço, catálogo e reputação no seu município?</div>
+          <div class="bullet-item"><span>?</span> O seu negócio existe para quem pesquisa por voz e IA no smartphone?</div>
         </div>
 
         <div>
           <button onclick="goToStep(2)" class="btn-primary">QUERO AVALIAR MINHA EMPRESA AGORA</button>
-          <div class="hint">Consulta neural direta aos servidores Google • Sem custos</div>
+          <div class="hint">Consulta neural em tempo real com dados locais • Sem custos</div>
         </div>
       </section>
 
-      <!-- TELA 2: FORMULARIO -->
+      <!-- TELA 2: FORMULARIO COM SEPARAÇÃO CLARA -->
       <section id="step-2" class="step-box card">
         <h2>Dados para a Varredura</h2>
-        <p class="sub">Construiremos a consulta geolocalizada para auditar a resposta da IA no seu município.</p>
+        <p class="sub">Separamos os dados do estabelecimento e os canais para envio do dossiê.</p>
 
         <form id="scannerForm" onsubmit="runScanner(event)">
+          
+          <div class="section-title">🏢 1. Estabelecimento a ser Auditado</div>
+          
           <div class="form-group">
             <label>Nome Comercial da Empresa</label>
-            <input type="text" id="businessName" required placeholder="Ex: Auto Mecânica Central">
+            <input type="text" id="businessName" required placeholder="Ex: Supermercado Simone, Cantina do Roni...">
           </div>
 
           <div class="form-row form-group">
@@ -123,19 +146,27 @@
               <input type="text" id="city" required placeholder="Ex: Matão - SP">
             </div>
             <div>
-              <label>Segmento / Serviço</label>
-              <input type="text" id="niche" required placeholder="Ex: Oficina Mecânica">
+              <label>Segmento / Categoria</label>
+              <input type="text" id="niche" required placeholder="Ex: Supermercado, Pizzaria, Oficina...">
             </div>
+          </div>
+
+          <div class="section-divider"></div>
+          <div class="section-title">📲 2. Onde Você Quer Receber o Laudo Completo?</div>
+
+          <div class="form-group">
+            <label>Nome do Responsável / Solicitante</label>
+            <input type="text" id="contactName" required placeholder="Ex: Roni Silva (Proprietário ou Gerente)">
           </div>
 
           <div class="form-row form-group">
             <div>
-              <label>WhatsApp</label>
+              <label>Seu WhatsApp (com DDD)</label>
               <input type="tel" id="phone" required placeholder="(16) 99999-9999">
             </div>
             <div>
-              <label>E-mail Comercial</label>
-              <input type="email" id="email" required placeholder="comercial@empresa.com">
+              <label>Seu Melhor E-mail</label>
+              <input type="email" id="email" required placeholder="seuemail@exemplo.com">
             </div>
           </div>
 
@@ -148,13 +179,13 @@
       <section id="step-loading" class="step-box card radar">
         <div class="spinner"></div>
         <h3 id="loadingText" style="font-size: 1.2rem; font-weight: 700;">Consultando Google Gemini em tempo real...</h3>
-        <p style="font-size: 0.8rem; color: #9ca3af; margin-top: 6px;">Interrogando o modelo neural com geolocalização exata do seu negócio...</p>
+        <p style="font-size: 0.8rem; color: #9ca3af; margin-top: 6px;">Varrendo a base de busca local do Google no município...</p>
         <div class="progress-track">
           <div id="bar" class="progress-bar"></div>
         </div>
       </section>
 
-      <!-- TELA 3: RESULTADOS -->
+      <!-- TELA 3: RESULTADOS (GEMINI + MOCKUP CELULAR) -->
       <section id="step-3" class="step-box">
         <div id="statusBanner" class="status-banner">
           <div>
@@ -164,17 +195,59 @@
           <div id="statusPill" class="pill-red">Omitido</div>
         </div>
 
-        <!-- CARD EXCLUSIVO GEMINI -->
-        <div class="ai-card-single">
-          <div class="ai-card-header">
-            <div>
-              <div class="ai-title">Google Gemini</div>
-              <div class="ai-model">Gemini 1.5 Flash • Análise Neural de Entidades Locais</div>
+        <div class="split-grid">
+          
+          <!-- LADO ESQUERDO: RESPOSTA DO GOOGLE GEMINI -->
+          <div class="ai-card">
+            <div class="ai-card-header">
+              <div>
+                <div class="ai-title">Google Gemini</div>
+                <div class="ai-model">Gemini 1.5 Flash • Consulta Neural em Tempo Real</div>
+              </div>
+              <div id="badgeGemini" class="badge-result badge-omitted">Omitido</div>
             </div>
-            <div id="badgeGemini" class="badge-result badge-omitted">Omitido</div>
+            <label style="font-size:0.75rem; color:#9ca3af; display:block; margin-bottom:8px;">Laudo Algorítmico Oficial:</label>
+            <div id="outGemini" class="gemini-response-box">Consultando base local...</div>
           </div>
-          <label style="font-size:0.75rem; color:#9ca3af; display:block; margin-bottom:8px;">Resposta Oficial do Motor:</label>
-          <div id="outGemini" class="terminal-box">Carregando laudo...</div>
+
+          <!-- LADO DIREITO: MOCKUP DE SMARTPHONE VISUAL -->
+          <div>
+            <div class="phone-mockup">
+              <div class="phone-notch"></div>
+              <div class="phone-screen">
+                <div>
+                  <div class="phone-search-bar">
+                    🔍 <span id="mockupQuery">Melhores locais em Matão</span>
+                  </div>
+                  <div class="phone-ai-bubble">
+                    <strong>Google Gemini:</strong><br>
+                    "Com base nas avaliações e dados locais mapeados na cidade:"
+                  </div>
+                  <div class="phone-competitor-list">
+                    <div style="font-size:0.65rem; color:#9ca3af; margin-bottom:4px; font-weight:700;">TOP RECOMENDAÇÕES DA IA:</div>
+                    <div class="phone-competitor-item">
+                      <span style="color:#38bdf8;">🏆 1º Concorrente Citado</span>
+                      <span style="color:#10b981; font-weight:700;">Recomendado</span>
+                    </div>
+                    <div class="phone-competitor-item">
+                      <span style="color:#38bdf8;">⭐ 2º Concorrente Citado</span>
+                      <span style="color:#10b981; font-weight:700;">Recomendado</span>
+                    </div>
+                    <div class="phone-competitor-item">
+                      <span style="color:#38bdf8;">⭐ 3º Concorrente Citado</span>
+                      <span style="color:#10b981; font-weight:700;">Recomendado</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div id="mockupAlert" class="phone-alert">
+                  ⚠️ SUA EMPRESA NÃO FOI CITADA NESTA BUSCA
+                </div>
+              </div>
+            </div>
+            <p style="text-align:center; font-size:0.75rem; color:#6b7280; margin-top:10px;">Simulação de consulta via assistente mobile</p>
+          </div>
+
         </div>
 
         <div class="cta-card">
@@ -202,8 +275,11 @@
       const businessName = document.getElementById('businessName').value.trim();
       const city = document.getElementById('city').value.trim();
       const niche = document.getElementById('niche').value.trim();
+      const contactName = document.getElementById('contactName').value.trim();
       const phone = document.getElementById('phone').value.trim();
       const email = document.getElementById('email').value.trim();
+
+      document.getElementById('mockupQuery').innerText = `${niche} em ${city}`;
 
       goToStep('loading');
       const bar = document.getElementById('bar');
@@ -218,7 +294,7 @@
         const res = await fetch('/api/audit', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ businessName, city, niche, phone, email })
+          body: JSON.stringify({ businessName, city, niche, contactName, phone, email })
         });
 
         clearInterval(progress);
@@ -237,6 +313,7 @@
         const sTitle = document.getElementById('statusTitle');
         const sDesc = document.getElementById('statusDesc');
         const sPill = document.getElementById('statusPill');
+        const mAlert = document.getElementById('mockupAlert');
 
         if (gemOk) {
           bGem.className = 'badge-result badge-cited';
@@ -245,9 +322,13 @@
           sBanner.style.backgroundColor = 'rgba(16, 185, 129, 0.1)';
           sTitle.style.color = '#34d399';
           sTitle.innerText = 'STATUS: EMPRESA ENCONTRADA NA IA!';
-          sDesc.innerText = 'Parabéns! O Google Gemini reconhece seu comércio na cidade.';
+          sDesc.innerText = 'Parabéns! O Google Gemini reconhece seu comércio no município.';
           sPill.className = 'badge-result badge-cited';
           sPill.innerText = '✓ Reconhecido';
+          mAlert.style.backgroundColor = 'rgba(16, 185, 129, 0.15)';
+          mAlert.style.borderColor = '#10b981';
+          mAlert.style.color = '#34d399';
+          mAlert.innerText = '✓ SUA EMPRESA FOI LOCALIZADA NESTA BUSCA!';
         } else {
           bGem.className = 'badge-result badge-omitted';
           bGem.innerText = '✗ Omitido';
@@ -258,6 +339,10 @@
           sDesc.innerText = 'O motor neural do Google não citou a sua empresa entre as principais recomendações locais.';
           sPill.className = 'pill-red';
           sPill.innerText = 'Omitido';
+          mAlert.style.backgroundColor = 'rgba(239, 68, 68, 0.15)';
+          mAlert.style.borderColor = '#ef4444';
+          mAlert.style.color = '#fca5a5';
+          mAlert.innerText = '⚠️ SUA EMPRESA NÃO FOI CITADA NESTA BUSCA';
         }
 
         const urlParams = new URLSearchParams(window.location.search);
