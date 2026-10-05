@@ -62,10 +62,9 @@ Instruções mandatórias:
 2. Para cada estabelecimento, destaque brevemente os diferenciais reais (qualidade, tradição, atendimento, ambiente ou estrutura).
 3. Não peça dados adicionais e não faça perguntas de volta. Entregue o laudo das recomendações de forma completa e imediata.`;
 
-    // Apontando exatamente para o modelo 3.8 que você validou
     const modelsToTry = [
-      "gemini-3.8-flash",
-      "gemini-flash-latest" // Rota alternativa caso o 3.8 dê pico de tráfego
+      "gemini-1.5-flash",
+      "gemini-flash-latest"
     ];
     
     let iaResponseText = "";
