@@ -21,15 +21,9 @@ export default async function handler(req, res) {
     const emailFinal = (b.email || '').trim();
     const refFinal = (b.ref || 'raiz_direta').trim();
 
-    if (!nomeFinal) {
-      return res.status(400).json({ error: 'Por favor, informe o Nome Comercial da empresa.' });
-    }
-    if (!cidadeFinal) {
-      return res.status(400).json({ error: 'Por favor, informe a Cidade e Estado.' });
-    }
-    if (!segmentoFinal) {
-      return res.status(400).json({ error: 'Por favor, informe o Segmento / Nicho.' });
-    }
+    if (!nomeFinal) return res.status(400).json({ error: 'Por favor, informe o Nome Comercial da empresa.' });
+    if (!cidadeFinal) return res.status(400).json({ error: 'Por favor, informe a Cidade e Estado.' });
+    if (!segmentoFinal) return res.status(400).json({ error: 'Por favor, informe o Segmento / Nicho.' });
 
     const WEBHOOK_URL = process.env.LEADS_WEBHOOK_URL;
     if (WEBHOOK_URL) {
@@ -68,7 +62,12 @@ Instruções mandatórias:
 2. Para cada estabelecimento, destaque brevemente os diferenciais reais (qualidade, tradição, atendimento, ambiente ou estrutura).
 3. Não peça dados adicionais e não faça perguntas de volta. Entregue o laudo das recomendações de forma completa e imediata.`;
 
-    const modelsToTry = ["gemini-2.5-flash", "gemini-2.0-flash", "gemini-flash-latest"];
+    // Apontando exatamente para o modelo 3.8 que você validou
+    const modelsToTry = [
+      "gemini-3.8-flash",
+      "gemini-flash-latest" // Rota alternativa caso o 3.8 dê pico de tráfego
+    ];
+    
     let iaResponseText = "";
     let lastError = "";
 
@@ -100,7 +99,7 @@ Instruções mandatórias:
     }
 
     if (!iaResponseText) {
-      return res.status(500).json({ error: `Servidores com alta demanda. (${lastError})` });
+      return res.status(500).json({ error: `Servidores com alta demanda. (${lastError}). Tente novamente em alguns segundos.` });
     }
 
     const cleanStr = (s) => (s || "").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9\s]/g, " ").trim();
