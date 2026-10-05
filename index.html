@@ -138,8 +138,8 @@
           </div>
 
           <div class="form-group">
-            <label>Item ou Especialidade Buscada (Opcional)</label>
-            <input type="text" id="specificItem" placeholder="Ex: espetinhos, cardiologia, troca de óleo, carnes nobres...">
+            <label>Item ou Especialidade Buscada (Obrigatório)</label>
+            <input type="text" id="specificItem" required placeholder="Ex: espetinhos, cardiologia, troca de óleo, açougue...">
           </div>
 
           <button type="submit" class="btn-step2">AVANÇAR PARA IDENTIFICAÇÃO →</button>
@@ -155,18 +155,18 @@
         <form id="leadForm" onsubmit="executeAuditor(event)">
           <div class="form-group">
             <label>Nome Comercial, Clínica, Escritório ou Marca</label>
-            <input type="text" id="businessName" required placeholder="Ex: Bolivar Espetos, Silva Advocacia, Dr. Carlos Ramos...">
+            <input type="text" id="businessName" required placeholder="Ex: Restaurante Sabores do Sul, Clínica Vida Plena...">
           </div>
 
           <div class="form-group">
             <label>Nome do Responsável / Solicitante</label>
-            <input type="text" id="contactName" required placeholder="Ex: Mario Sanches (Proprietário ou Titular)">
+            <input type="text" id="contactName" required placeholder="Ex: Dr. Roberto Alencar (Diretor ou Titular)">
           </div>
 
           <div class="form-row form-group">
             <div>
               <label>WhatsApp com DDD</label>
-              <input type="tel" id="phone" required placeholder="(16) 99999-9999">
+              <input type="tel" id="phone" required placeholder="(11) 98765-4321">
             </div>
             <div>
               <label>Seu Melhor E-mail</label>
@@ -245,7 +245,6 @@
         district: districtVal || "toda a cidade",
         niche: document.getElementById('niche').value.trim(),
         specificItem: document.getElementById('specificItem').value.trim(),
-        // Aliases em português para compatibilidade total com o backend
         cidade: document.getElementById('stateCity').value.trim(),
         segmento: document.getElementById('niche').value.trim(),
         item: document.getElementById('specificItem').value.trim(),
