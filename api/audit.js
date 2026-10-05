@@ -8,6 +8,9 @@ export default async function handler(req, res) {
   if (req.method === 'OPTIONS') return res.status(200).end();
   if (req.method !== 'POST') return res.status(405).json({ error: 'Método não permitido.' });
 
+  // Função para criar uma pausa (Delay) e não bombardear o servidor
+  const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+
   try {
     const b = req.body || {};
 
@@ -62,8 +65,10 @@ Instruções mandatórias:
 2. Para cada estabelecimento, destaque brevemente os diferenciais reais (qualidade, tradição, atendimento, ambiente ou estrutura).
 3. Não peça dados adicionais e não faça perguntas de volta. Entregue o laudo das recomendações de forma completa e imediata.`;
 
+    // Voltamos para os seus modelos corretos
     const modelsToTry = [
-      "gemini-1.5-flash",
+      "gemini-3.8-flash",
+      "gemini-3.8-pro",
       "gemini-flash-latest"
     ];
     
@@ -86,19 +91,26 @@ Instruções mandatórias:
         });
 
         const data = await resp.json();
+        
         if (resp.ok && data.candidates?.[0]?.content?.parts?.[0]?.text) {
           iaResponseText = data.candidates[0].content.parts[0].text;
-          break;
+          break; // Deu certo, sai do loop imediatamente
         } else {
           lastError = data.error?.message || "Sem retorno do modelo";
+          
+          // MÁGICA AQUI: Se a Google der erro 503 (High Demand) ou 429 (Muitas requisições), o código espera 2 segundos antes de tentar de novo.
+          if (resp.status === 503 || resp.status === 429) {
+            await delay(2000); 
+          }
         }
       } catch (err) {
         lastError = err.message;
+        await delay(1000);
       }
     }
 
     if (!iaResponseText) {
-      return res.status(500).json({ error: `Servidores com alta demanda. (${lastError}). Tente novamente em alguns segundos.` });
+      return res.status(500).json({ error: `Servidores da IA em alta demanda. (${lastError}).` });
     }
 
     const cleanStr = (s) => (s || "").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9\s]/g, " ").trim();
