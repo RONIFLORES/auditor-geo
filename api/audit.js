@@ -8,137 +8,123 @@ export default async function handler(req, res) {
   if (req.method === 'OPTIONS') return res.status(200).end();
   if (req.method !== 'POST') return res.status(405).json({ error: 'Método não permitido.' });
 
-  const { businessName, city, niche, contactName, phone, email, ref } = req.body;
-  if (!businessName || !city || !niche) {
-    return res.status(400).json({ error: 'Preencha os dados da empresa (Nome, Cidade e Segmento).' });
-  }
+  try {
+    const b = req.body || {};
 
-  // 1. CAPTURA DO LEAD (WEBHOOK / PLANILHA SE CONFIGURADO)
-  const WEBHOOK_URL = process.env.LEADS_WEBHOOK_URL;
-  if (WEBHOOK_URL) {
-    try {
-      fetch(WEBHOOK_URL, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          dataHora: new Date().toISOString(),
-          businessName,
-          city,
-          niche,
-          contactName: contactName || '',
-          phone: phone || '',
-          email: email || '',
-          mentorRef: ref || 'direto'
-        })
-      }).catch(e => console.error("Webhook lead erro:", e));
-    } catch (ignore) {}
-  }
+    const nomeFinal = (b.businessName || b.nome || b.nomeComercial || b.empresa || '').trim();
+    const cidadeFinal = (b.stateCity || b.cidade || b.cidadeEstado || b.city || '').trim();
+    const segmentoFinal = (b.niche || b.segmento || b.setor || b.categoria || '').trim();
+    const itemFinal = (b.specificItem || b.item || b.especialidade || '').trim();
+    const bairroFinal = (b.district || b.bairro || '').trim() || 'toda a cidade';
+    const respFinal = (b.contactName || b.responsavel || '').trim();
+    const foneFinal = (b.phone || b.whatsapp || '').trim();
+    const emailFinal = (b.email || '').trim();
+    const refFinal = (b.ref || 'raiz_direta').trim();
 
-  // 2. CONSULTA AO GOOGLE GEMINI
-  const GEMINI_KEY = process.env.GEMINI_API_KEY;
-  if (!GEMINI_KEY) {
-    return res.status(500).json({ error: 'Chave GEMINI_API_KEY não configurada na Vercel.' });
-  }
+    if (!nomeFinal) {
+      return res.status(400).json({ error: 'Por favor, informe o Nome Comercial da empresa.' });
+    }
+    if (!cidadeFinal) {
+      return res.status(400).json({ error: 'Por favor, informe a Cidade e Estado.' });
+    }
+    if (!segmentoFinal) {
+      return res.status(400).json({ error: 'Por favor, informe o Segmento / Nicho.' });
+    }
 
-  const prompt = `Você é um morador bem informado da cidade de ${city}. 
-Pergunta: "Quais são as melhores opções e estabelecimentos recomendados no segmento de ${niche} em ${city}?"
-Liste de 3 a 4 nomes dos estabelecimentos locais mais conhecidos ou bem avaliados na cidade de ${city} e explique brevemente os diferenciais de cada um.
-Seja direto, profissional e objetivo na sua resposta.`;
-
-  const normalizeStr = (str) => {
-    if (!str) return "";
-    return str.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9]/g, "");
-  };
-
-  const checkPresence = (text, target) => {
-    if (!text || !target) return false;
-    const cleanT = normalizeStr(text);
-    const targetClean = normalizeStr(target);
-    if (cleanT.includes(targetClean)) return true;
-    const words = target.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").split(/\s+/).filter(w => w.length >= 4);
-    return words.some(w => cleanT.includes(w));
-  };
-
-  // Descobrir dinamicamente os modelos ativos para esta chave ou usar a lista atualizada
-  async function callGemini() {
-    // 1. Tentar os endpoints oficiais mais recentes e estáveis
-    const modelsToTry = [
-      "gemini-2.5-flash",
-      "gemini-2.0-flash",
-      "gemini-2.0-flash-lite",
-      "gemini-flash-latest"
-    ];
-
-    for (const m of modelsToTry) {
+    const WEBHOOK_URL = process.env.LEADS_WEBHOOK_URL;
+    if (WEBHOOK_URL) {
       try {
-        const resp = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${m}:generateContent?key=${GEMINI_KEY}`, {
+        fetch(WEBHOOK_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            dataHora: new Date().toISOString(),
+            cidade: cidadeFinal,
+            bairro: bairroFinal,
+            segmento: segmentoFinal,
+            item: itemFinal || 'Geral',
+            empresa: nomeFinal,
+            responsavel: respFinal,
+            whatsapp: foneFinal,
+            email: emailFinal,
+            mentorRef: refFinal
+          })
+        }).catch(e => console.error("Webhook lead erro:", e));
+      } catch (ignore) {}
+    }
+
+    const apiKey = (process.env.GEMINI_API_KEY || '').trim();
+    if (!apiKey) {
+      return res.status(500).json({ error: 'Chave GEMINI_API_KEY não configurada na Vercel.' });
+    }
+
+    const localContexto = (bairroFinal && bairroFinal !== 'toda a cidade') ? `\({bairroFinal},\){cidadeFinal}` : cidadeFinal;
+    const itemTexto = itemFinal ? `com foco em ${itemFinal}` : '';
+
+    const prompt = `Você é o assistente neural de buscas locais Google Gemini consultado no smartphone por um cliente real.
+Pergunta do usuário: "Quais são os melhores e mais recomendados locais em \({localContexto} para\){segmentoFinal} ${itemTexto}?"
+Instruções mandatórias:
+1. Responda diretamente listando de 2 a 4 estabelecimentos reais e populares que atendam a essa busca em ${cidadeFinal}.
+2. Para cada estabelecimento, destaque brevemente os diferenciais reais (qualidade, tradição, atendimento, ambiente ou estrutura).
+3. Não peça dados adicionais e não faça perguntas de volta. Entregue o laudo das recomendações de forma completa e imediata.`;
+
+    const modelsToTry = ["gemini-2.5-flash", "gemini-2.0-flash", "gemini-flash-latest"];
+    let iaResponseText = "";
+    let lastError = "";
+
+    for (const model of modelsToTry) {
+      try {
+        const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`;
+        const resp = await fetch(url, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            "x-goog-api-key": GEMINI_KEY
+            "x-goog-api-key": apiKey
           },
           body: JSON.stringify({
             contents: [{ parts: [{ text: prompt }] }],
-            generationConfig: { temperature: 0.3, maxOutputTokens: 800 }
+            generationConfig: { temperature: 0.2, maxOutputTokens: 850 }
           })
         });
 
         const data = await resp.json();
         if (resp.ok && data.candidates?.[0]?.content?.parts?.[0]?.text) {
-          return { model: m, text: data.candidates[0].content.parts[0].text };
+          iaResponseText = data.candidates[0].content.parts[0].text;
+          break;
+        } else {
+          lastError = data.error?.message || "Sem retorno do modelo";
         }
       } catch (err) {
-        // tenta o próximo
+        lastError = err.message;
       }
     }
 
-    // 2. Se nenhum dos nomes fixos responder, pergunta à API quais modelos suportam generateContent
-    try {
-      const listResp = await fetch(`https://generativelanguage.googleapis.com/v1beta/models?key=${GEMINI_KEY}`);
-      const listData = await listResp.json();
-      if (listData.models && Array.isArray(listData.models)) {
-        const available = listData.models.filter(mod => 
-          mod.supportedGenerationMethods && 
-          mod.supportedGenerationMethods.includes("generateContent") &&
-          mod.name.includes("flash")
-        );
-
-        for (const targetMod of available) {
-          const modName = targetMod.name.replace("models/", "");
-          const resp = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${modName}:generateContent?key=${GEMINI_KEY}`, {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-              "x-goog-api-key": GEMINI_KEY
-            },
-            body: JSON.stringify({
-              contents: [{ parts: [{ text: prompt }] }],
-              generationConfig: { temperature: 0.3, maxOutputTokens: 800 }
-            })
-          });
-          const data = await resp.json();
-          if (resp.ok && data.candidates?.[0]?.content?.parts?.[0]?.text) {
-            return { model: modName, text: data.candidates[0].content.parts[0].text };
-          }
-        }
-      }
-    } catch (discoveryErr) {
-      console.error("Erro na auto-descoberta:", discoveryErr);
+    if (!iaResponseText) {
+      return res.status(500).json({ error: `Servidores com alta demanda. (${lastError})` });
     }
 
-    throw new Error("Nenhum modelo da API do Gemini respondeu com sucesso. Verifique a validade da chave GEMINI_API_KEY no Google AI Studio.");
-  }
+    const cleanStr = (s) => (s || "").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9\s]/g, " ").trim();
+    const cleanText = cleanStr(iaResponseText);
+    const cleanTarget = cleanStr(nomeFinal);
 
-  try {
-    const result = await callGemini();
-    const isMentioned = checkPresence(result.text, businessName);
+    let isMentioned = false;
+    if (cleanText.includes(cleanTarget)) {
+      isMentioned = true;
+    } else {
+      const stopWords = ["o", "a", "os", "as", "de", "do", "da", "em", "e", "ltda", "me", "epp", "comercio", "servicos", "loja", "restaurante", "bar"];
+      const words = cleanTarget.split(/\s+/).filter(w => w.length >= 4 && !stopWords.includes(w));
+      if (words.length > 0 && words.some(w => cleanText.includes(w))) {
+        isMentioned = true;
+      }
+    }
 
     return res.status(200).json({
-      modelUsed: result.model,
-      gemini: { text: result.text, mentioned: isMentioned },
-      lead: { businessName, city, niche, contactName, phone, email }
+      iaResponseText,
+      isMentioned,
+      lead: { nomeFinal, cidadeFinal, segmentoFinal, foneFinal, emailFinal }
     });
-  } catch (error) {
-    return res.status(500).json({ error: error.message });
+
+  } catch (err) {
+    return res.status(500).json({ error: err.message || 'Erro interno.' });
   }
 }
