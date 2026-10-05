@@ -8,7 +8,6 @@ export default async function handler(req, res) {
   if (req.method === 'OPTIONS') return res.status(200).end();
   if (req.method !== 'POST') return res.status(405).json({ error: 'Método não permitido.' });
 
-  // Função para criar uma pausa (Delay) e não bombardear o servidor
   const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
   try {
@@ -24,9 +23,9 @@ export default async function handler(req, res) {
     const emailFinal = (b.email || '').trim();
     const refFinal = (b.ref || 'raiz_direta').trim();
 
-    if (!nomeFinal) return res.status(400).json({ error: 'Por favor, informe o Nome Comercial da empresa.' });
-    if (!cidadeFinal) return res.status(400).json({ error: 'Por favor, informe a Cidade e Estado.' });
-    if (!segmentoFinal) return res.status(400).json({ error: 'Por favor, informe o Segmento / Nicho.' });
+    if (!nomeFinal) return res.status(400).json({ error: 'Por favor, informe o Nome Comercial.' });
+    if (!cidadeFinal) return res.status(400).json({ error: 'Por favor, informe a Cidade.' });
+    if (!segmentoFinal) return res.status(400).json({ error: 'Por favor, informe o Segmento.' });
 
     const WEBHOOK_URL = process.env.LEADS_WEBHOOK_URL;
     if (WEBHOOK_URL) {
@@ -35,82 +34,57 @@ export default async function handler(req, res) {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
-            dataHora: new Date().toISOString(),
-            cidade: cidadeFinal,
-            bairro: bairroFinal,
-            segmento: segmentoFinal,
-            item: itemFinal || 'Geral',
-            empresa: nomeFinal,
-            responsavel: respFinal,
-            whatsapp: foneFinal,
-            email: emailFinal,
-            mentorRef: refFinal
+            dataHora: new Date().toISOString(), cidade: cidadeFinal, bairro: bairroFinal,
+            segmento: segmentoFinal, item: itemFinal || 'Geral', empresa: nomeFinal,
+            responsavel: respFinal, whatsapp: foneFinal, email: emailFinal, mentorRef: refFinal
           })
-        }).catch(e => console.error("Webhook lead erro:", e));
+        }).catch(() => {});
       } catch (ignore) {}
     }
 
     const apiKey = (process.env.GEMINI_API_KEY || '').trim();
-    if (!apiKey) {
-      return res.status(500).json({ error: 'Chave GEMINI_API_KEY não configurada na Vercel.' });
-    }
+    if (!apiKey) return res.status(500).json({ error: 'Chave API ausente.' });
 
-    const localContexto = (bairroFinal && bairroFinal !== 'toda a cidade') ? `\({bairroFinal},\){cidadeFinal}` : cidadeFinal;
+    const localContexto = (bairroFinal && bairroFinal !== 'toda a cidade') ? `${bairroFinal}, ${cidadeFinal}` : cidadeFinal;
     const itemTexto = itemFinal ? `com foco em ${itemFinal}` : '';
 
     const prompt = `Você é o assistente neural de buscas locais Google Gemini consultado no smartphone por um cliente real.
-Pergunta do usuário: "Quais são os melhores e mais recomendados locais em \({localContexto} para\){segmentoFinal} ${itemTexto}?"
+Pergunta do usuário: "Quais são os melhores e mais recomendados locais em ${localContexto} para ${segmentoFinal} ${itemTexto}?"
 Instruções mandatórias:
 1. Responda diretamente listando de 2 a 4 estabelecimentos reais e populares que atendam a essa busca em ${cidadeFinal}.
-2. Para cada estabelecimento, destaque brevemente os diferenciais reais (qualidade, tradição, atendimento, ambiente ou estrutura).
-3. Não peça dados adicionais e não faça perguntas de volta. Entregue o laudo das recomendações de forma completa e imediata.`;
+2. Para cada estabelecimento, destaque brevemente os diferenciais reais.
+3. Não faça perguntas de volta. Entregue o laudo imediatamente.`;
 
-    // Voltamos para os seus modelos corretos
-    const modelsToTry = [
-      "gemini-3.8-flash",
-      "gemini-3.8-pro",
-      "gemini-flash-latest"
-    ];
-    
+    const modelsToTry = ["gemini-3.8-flash", "gemini-3.8-pro", "gemini-flash-latest", "gemini-1.5-flash"];
     let iaResponseText = "";
-    let lastError = "";
+    
+    // Loop Silencioso: Tenta até 3 vezes com intervalo caso o servidor esteja lotado
+    for (let tentativa = 1; tentativa <= 3; tentativa++) {
+      for (const model of modelsToTry) {
+        try {
+          const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`;
+          const resp = await fetch(url, {
+            method: "POST",
+            headers: { "Content-Type": "application/json", "x-goog-api-key": apiKey },
+            body: JSON.stringify({
+              contents: [{ parts: [{ text: prompt }] }],
+              generationConfig: { temperature: 0.2, maxOutputTokens: 850 }
+            })
+          });
 
-    for (const model of modelsToTry) {
-      try {
-        const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`;
-        const resp = await fetch(url, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "x-goog-api-key": apiKey
-          },
-          body: JSON.stringify({
-            contents: [{ parts: [{ text: prompt }] }],
-            generationConfig: { temperature: 0.2, maxOutputTokens: 850 }
-          })
-        });
-
-        const data = await resp.json();
-        
-        if (resp.ok && data.candidates?.[0]?.content?.parts?.[0]?.text) {
-          iaResponseText = data.candidates[0].content.parts[0].text;
-          break; // Deu certo, sai do loop imediatamente
-        } else {
-          lastError = data.error?.message || "Sem retorno do modelo";
-          
-          // MÁGICA AQUI: Se a Google der erro 503 (High Demand) ou 429 (Muitas requisições), o código espera 2 segundos antes de tentar de novo.
-          if (resp.status === 503 || resp.status === 429) {
-            await delay(2000); 
+          const data = await resp.json();
+          if (resp.ok && data.candidates?.[0]?.content?.parts?.[0]?.text) {
+            iaResponseText = data.candidates[0].content.parts[0].text;
+            break;
           }
-        }
-      } catch (err) {
-        lastError = err.message;
-        await delay(1000);
+        } catch (err) {}
       }
+      if (iaResponseText) break;
+      await delay(2500); // Aguarda 2.5 segundos silenciosamente antes de tentar novamente
     }
 
     if (!iaResponseText) {
-      return res.status(500).json({ error: `Servidores da IA em alta demanda. (${lastError}).` });
+      return res.status(500).json({ error: 'Nossos servidores estão com alto tráfego. Por favor, tente novamente.' });
     }
 
     const cleanStr = (s) => (s || "").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9\s]/g, " ").trim();
@@ -121,9 +95,12 @@ Instruções mandatórias:
     if (cleanText.includes(cleanTarget)) {
       isMentioned = true;
     } else {
-      const stopWords = ["o", "a", "os", "as", "de", "do", "da", "em", "e", "ltda", "me", "epp", "comercio", "servicos", "loja", "restaurante", "bar"];
-      const words = cleanTarget.split(/\s+/).filter(w => w.length >= 4 && !stopWords.includes(w));
-      if (words.length > 0 && words.some(w => cleanText.includes(w))) {
+      // Filtro Rigoroso: Remove palavras genéricas para evitar falsos positivos
+      const stopWords = ["o", "a", "os", "as", "de", "do", "da", "em", "e", "ltda", "me", "epp", "comercio", "servicos", "loja", "restaurante", "bar", "supermercado", "mercado", "padaria", "farmacia", "clinica", "oficina", "centro", "studio", "espaco"];
+      const words = cleanTarget.split(/\s+/).filter(w => w.length >= 3 && !stopWords.includes(w));
+      
+      // Exige que TODAS as palavras únicas restantes do nome da empresa existam no texto da IA
+      if (words.length > 0 && words.every(w => cleanText.includes(w))) {
         isMentioned = true;
       }
     }
@@ -135,6 +112,6 @@ Instruções mandatórias:
     });
 
   } catch (err) {
-    return res.status(500).json({ error: err.message || 'Erro interno.' });
+    return res.status(500).json({ error: 'Erro interno de conexão.' });
   }
 }
