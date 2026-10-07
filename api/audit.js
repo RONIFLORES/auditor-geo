@@ -54,19 +54,19 @@ Pergunta do usuário: "Quais são os melhores e mais recomendados locais em ${lo
 Instruções mandatórias:
 1. Responda diretamente listando de 2 a 4 estabelecimentos reais e populares que atendam a essa busca em ${cidadeFinal}.
 2. Para cada estabelecimento, destaque brevemente os diferenciais reais.
-3. Não faça perguntas de volta. Entregue o laudo imediatamente.`;
+3. Não faça perguntas de volta. Entregue o laudo imediatamente.
+4. IMPORTANTE: Conclua a sua resposta até o fim, não corte o texto pela metade.`;
 
-    const modelsToTry = ["gemini-3.8-flash", "gemini-3.8-pro", "gemini-flash-latest", "gemini-1.5-flash"];
+    const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
+    
     let iaResponseText = "";
     
     // Loop Silencioso: Tenta até 3 vezes com intervalo caso o servidor esteja lotado
     for (let tentativa = 1; tentativa <= 3; tentativa++) {
-      for (const model of modelsToTry) {
         try {
-          const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`;
           const resp = await fetch(url, {
             method: "POST",
-            headers: { "Content-Type": "application/json", "x-goog-api-key": apiKey },
+            headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
               contents: [{ parts: [{ text: prompt }] }],
               generationConfig: { temperature: 0.2, maxOutputTokens: 850 }
@@ -79,7 +79,6 @@ Instruções mandatórias:
             break;
           }
         } catch (err) {}
-      }
       if (iaResponseText) break;
       await delay(2500); // Aguarda 2.5 segundos silenciosamente antes de tentar novamente
     }
@@ -100,8 +99,8 @@ Instruções mandatórias:
       const stopWords = ["o", "a", "os", "as", "de", "do", "da", "em", "e", "ltda", "me", "epp", "comercio", "servicos", "loja", "restaurante", "bar", "supermercado", "mercado", "padaria", "farmacia", "clinica", "oficina", "centro", "studio", "espaco"];
       const words = cleanTarget.split(/\s+/).filter(w => w.length >= 3 && !stopWords.includes(w));
       
-      // Exige que TODAS as palavras únicas restantes do nome da empresa existam no texto da IA
-      if (words.length > 0 && words.every(w => cleanText.includes(w))) {
+      // MUDANÇA: Substituído "every" por "some" para evitar que nomes com sobrenomes quebrem a validação
+      if (words.length > 0 && words.some(w => cleanText.includes(w))) {
         isMentioned = true;
       }
     }
