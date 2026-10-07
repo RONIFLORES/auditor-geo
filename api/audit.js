@@ -27,7 +27,6 @@ export default async function handler(req, res) {
     if (!cidadeFinal) return res.status(400).json({ error: 'Por favor, informe a Cidade.' });
     if (!segmentoFinal) return res.status(400).json({ error: 'Por favor, informe o Segmento.' });
 
-    // Envio para o Webhook (Preservado e Intacto)
     const WEBHOOK_URL = process.env.LEADS_WEBHOOK_URL;
     if (WEBHOOK_URL) {
       try {
@@ -44,7 +43,7 @@ export default async function handler(req, res) {
     }
 
     const apiKey = (process.env.GEMINI_API_KEY || '').trim();
-    if (!apiKey) return res.status(500).json({ error: 'Chave API ausente no servidor Vercel.' });
+    if (!apiKey) return res.status(500).json({ error: 'Chave API ausente.' });
 
     const localContexto = (bairroFinal && bairroFinal !== 'toda a cidade') ? `${bairroFinal}, ${cidadeFinal}` : cidadeFinal;
     const itemTexto = itemFinal ? `com foco em ${itemFinal}` : '';
@@ -54,23 +53,22 @@ Pergunta do usuário: "Quais são os melhores e mais recomendados locais em ${lo
 Instruções mandatórias:
 1. Responda diretamente listando de 2 a 4 estabelecimentos reais e populares que atendam a essa busca em ${cidadeFinal}.
 2. Para cada estabelecimento, destaque brevemente os diferenciais reais.
-3. Não faça perguntas de volta. Entregue o laudo imediatamente.
-4. IMPORTANTE: Conclua a sua resposta até o fim, não corte o texto pela metade.`;
+3. Não faça perguntas de volta. Entregue o laudo imediatamente.`;
 
-    const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent`;
-    
+    // LISTA INTELIGENTE DE MODELOS RESTAURADA E CORRIGIDA PARA A API ATUAL
+    const modelsToTry = ["gemini-pro", "gemini-1.5-flash-latest", "gemini-1.5-pro-latest"];
     let iaResponseText = "";
-    let erroReal = ""; 
+    let lastError = "";
+    let statusCode = 500;
     
-    // Loop de tentativas com autenticação restaurada
+    // Loop Silencioso com sistema de fallback
     for (let tentativa = 1; tentativa <= 3; tentativa++) {
+      for (const model of modelsToTry) {
         try {
+          const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`;
           const resp = await fetch(url, {
             method: "POST",
-            headers: { 
-              "Content-Type": "application/json",
-              "x-goog-api-key": apiKey 
-            },
+            headers: { "Content-Type": "application/json", "x-goog-api-key": apiKey },
             body: JSON.stringify({
               contents: [{ parts: [{ text: prompt }] }],
               generationConfig: { temperature: 0.2, maxOutputTokens: 850 }
@@ -82,18 +80,22 @@ Instruções mandatórias:
             iaResponseText = data.candidates[0].content.parts[0].text;
             break;
           } else {
-            erroReal = data.error?.message || "Erro desconhecido do Google";
+             lastError = data.error?.message || `Erro ${resp.status}`;
+             statusCode = resp.status;
           }
         } catch (err) {
-          erroReal = err.message;
+           lastError = err.message;
         }
+      }
       if (iaResponseText) break;
-      await delay(2500);
+      await delay(2500); 
     }
 
     if (!iaResponseText) {
-      // Agora o sistema mostrará o erro VERDADEIRO na tela
-      return res.status(500).json({ error: `IA falhou. Motivo: ${erroReal}` });
+      if (statusCode === 429 || (lastError && lastError.includes("quota"))) {
+        return res.status(429).json({ error: 'Limite de segurança anti-spam do Google ativado (15 buscas/minuto). Aguarde 60 segundos.' });
+      }
+      return res.status(500).json({ error: `IA falhou. Motivo: ${lastError}` });
     }
 
     const cleanStr = (s) => (s || "").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9\s]/g, " ").trim();
@@ -104,10 +106,10 @@ Instruções mandatórias:
     if (cleanText.includes(cleanTarget)) {
       isMentioned = true;
     } else {
-      const stopWords = ["o", "a", "os", "as", "de", "do", "da", "em", "e", "ltda", "me", "epp", "comercio", "servicos", "loja", "restaurante", "bar", "supermercado", "mercado", "padaria", "farmacia", "clinica", "oficina", "centro", "studio", "espaco", "bairro", "sao", "jose", "matao", "rua", "avenida"];
+      const stopWords = ["o", "a", "os", "as", "de", "do", "da", "em", "e", "ltda", "me", "epp", "comercio", "servicos", "loja", "restaurante", "bar", "supermercado", "mercado", "padaria", "farmacia", "clinica", "oficina", "centro", "studio", "espaco"];
       const words = cleanTarget.split(/\s+/).filter(w => w.length >= 3 && !stopWords.includes(w));
       
-      if (words.length > 0 && words.some(w => cleanText.includes(w))) {
+      if (words.length > 0 && words.every(w => cleanText.includes(w))) {
         isMentioned = true;
       }
     }
@@ -119,6 +121,6 @@ Instruções mandatórias:
     });
 
   } catch (err) {
-    return res.status(500).json({ error: 'Erro interno de processamento.' });
+    return res.status(500).json({ error: 'Erro interno de conexão.' });
   }
 }
