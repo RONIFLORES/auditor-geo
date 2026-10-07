@@ -1,3 +1,4 @@
+// Atualizacao forcada 
 // api/audit.js
 export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Credentials', true);
@@ -55,13 +56,10 @@ Instruções mandatórias:
 2. Para cada estabelecimento, destaque brevemente os diferenciais reais.
 3. Não faça perguntas de volta. Entregue o laudo imediatamente.`;
 
-    // LISTA INTELIGENTE DE MODELOS RESTAURADA E CORRIGIDA PARA A API ATUAL
-    const modelsToTry = ["gemini-pro", "gemini-1.5-flash-latest", "gemini-1.5-pro-latest"];
+    const modelsToTry = ["gemini-1.5-flash", "gemini-1.5-pro", "gemini-pro"];
     let iaResponseText = "";
-    let lastError = "";
-    let statusCode = 500;
     
-    // Loop Silencioso com sistema de fallback
+    // Loop Silencioso: Tenta até 3 vezes com intervalo caso o servidor esteja lotado
     for (let tentativa = 1; tentativa <= 3; tentativa++) {
       for (const model of modelsToTry) {
         try {
@@ -79,23 +77,15 @@ Instruções mandatórias:
           if (resp.ok && data.candidates?.[0]?.content?.parts?.[0]?.text) {
             iaResponseText = data.candidates[0].content.parts[0].text;
             break;
-          } else {
-             lastError = data.error?.message || `Erro ${resp.status}`;
-             statusCode = resp.status;
           }
-        } catch (err) {
-           lastError = err.message;
-        }
+        } catch (err) {}
       }
       if (iaResponseText) break;
-      await delay(2500); 
+      await delay(2500); // Aguarda 2.5 segundos silenciosamente antes de tentar novamente
     }
 
     if (!iaResponseText) {
-      if (statusCode === 429 || (lastError && lastError.includes("quota"))) {
-        return res.status(429).json({ error: 'Limite de segurança anti-spam do Google ativado (15 buscas/minuto). Aguarde 60 segundos.' });
-      }
-      return res.status(500).json({ error: `IA falhou. Motivo: ${lastError}` });
+      return res.status(500).json({ error: 'Nossos servidores estão com alto tráfego. Por favor, tente novamente.' });
     }
 
     const cleanStr = (s) => (s || "").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9\s]/g, " ").trim();
@@ -106,9 +96,11 @@ Instruções mandatórias:
     if (cleanText.includes(cleanTarget)) {
       isMentioned = true;
     } else {
+      // Filtro Rigoroso: Remove palavras genéricas para evitar falsos positivos
       const stopWords = ["o", "a", "os", "as", "de", "do", "da", "em", "e", "ltda", "me", "epp", "comercio", "servicos", "loja", "restaurante", "bar", "supermercado", "mercado", "padaria", "farmacia", "clinica", "oficina", "centro", "studio", "espaco"];
       const words = cleanTarget.split(/\s+/).filter(w => w.length >= 3 && !stopWords.includes(w));
       
+      // Exige que TODAS as palavras únicas restantes do nome da empresa existam no texto da IA
       if (words.length > 0 && words.every(w => cleanText.includes(w))) {
         isMentioned = true;
       }
