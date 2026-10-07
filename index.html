@@ -3,25 +3,23 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>AUDITOR GEO • Varredura de Entidades Locais em IA</title>
+  <title>Auditor GEO - Inteligência Artificial</title>
   <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
-    body { background-color: #030712; color: #f3f4f6; min-height: 100vh; display: flex; flex-direction: column; justify-content: space-between; }
-    header { background: #0b0f19; border-bottom: 1px solid #1f2937; padding: 16px 24px; display: flex; justify-content: space-between; align-items: center; }
-    .brand { font-weight: 900; font-size: 1.15rem; letter-spacing: 1px; color: #fff; display: flex; align-items: center; gap: 8px; }
-    .brand span { color: #06b6d4; }
-    .dot { width: 10px; height: 10px; background: #06b6d4; border-radius: 50%; box-shadow: 0 0 10px #06b6d4; }
-    .status-pill { font-size: 0.75rem; background: #030712; border: 1px solid #374151; padding: 6px 14px; border-radius: 999px; color: #9ca3af; }
-    .status-pill strong { color: #10b981; }
-
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; }
+    body { background-color: #030712; color: #f9fafb; display: flex; flex-direction: column; min-height: 100vh; }
+    header { background: rgba(3, 7, 18, 0.8); backdrop-filter: blur(10px); border-bottom: 1px solid #1f2937; padding: 16px 24px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 100; }
+    .logo { font-weight: 900; font-size: 1.4rem; letter-spacing: -0.5px; display: flex; align-items: center; gap: 8px; }
+    .logo span { color: #06b6d4; }
+    .status-indicator { display: flex; align-items: center; gap: 6px; font-size: 0.75rem; font-weight: 600; color: #10b981; background: rgba(16, 185, 129, 0.1); padding: 4px 10px; border-radius: 999px; border: 1px solid rgba(16, 185, 129, 0.2); }
+    .status-dot { width: 6px; height: 6px; background: #10b981; border-radius: 50%; box-shadow: 0 0 8px #10b981; animation: pulse 2s infinite; }
+    @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.4; } 100% { opacity: 1; } }
     main { flex: 1; display: flex; align-items: center; justify-content: center; padding: 24px 16px; }
     .container { width: 100%; max-width: 1040px; }
-
     .step-box { display: none; animation: fadeIn 0.3s ease; }
     .step-box.active { display: block; }
     @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
 
-    /* PÁGINA 1: LANDING */
+    /* Estilos Gerais */
     .hero { text-align: center; max-width: 760px; margin: 0 auto; }
     .tag { display: inline-block; background: rgba(6,182,212,0.1); border: 1px solid rgba(6,182,212,0.3); color: #22d3ee; font-size: 0.8rem; font-weight: 700; padding: 6px 16px; border-radius: 999px; text-transform: uppercase; margin-bottom: 20px; }
     h1 { font-size: 2.5rem; font-weight: 900; line-height: 1.2; margin-bottom: 24px; }
@@ -29,18 +27,15 @@
     .bullets { display: flex; flex-direction: column; gap: 12px; margin-bottom: 32px; max-width: 580px; margin-left: auto; margin-right: auto; }
     .bullet-item { background: #0b0f19; border: 1px solid #1f2937; padding: 14px 20px; border-radius: 12px; font-size: 0.95rem; text-align: left; display: flex; align-items: center; gap: 12px; color: #d1d5db; }
     .bullet-item span { color: #06b6d4; font-weight: 800; font-size: 1.1rem; }
-
-    .btn-primary { width: 100%; max-width: 480px; padding: 18px 24px; background: linear-gradient(90deg, #06b6d4, #2563eb); border: none; border-radius: 14px; color: #030712; font-weight: 900; font-size: 1.1rem; cursor: pointer; transition: transform 0.2s, box-shadow 0.2s; box-shadow: 0 10px 25px rgba(6,182,212,0.3); text-decoration: none; display: inline-block; text-align: center; }
+    .btn-primary { width: 100%; max-width: 480px; padding: 18px 24px; background: linear-gradient(90deg, #06b6d4, #2563eb); border: none; border-radius: 14px; color: #030712; font-weight: 900; font-size: 1.1rem; cursor: pointer; transition: transform 0.2s; box-shadow: 0 10px 25px rgba(6,182,212,0.3); display: inline-block; text-align: center; }
     .btn-primary:hover { transform: scale(1.02); }
-    .hint { font-size: 0.75rem; color: #6b7280; margin-top: 10px; }
-
-    /* FORMULÁRIOS (PÁGINA 2 E PÁGINA 3) */
+    
     .card-form { max-width: 760px; margin: 0 auto; background: #0b0f19; border: 1px solid #1f2937; border-radius: 20px; padding: 32px; box-shadow: 0 20px 40px rgba(0,0,0,0.5); }
     .card-form h2 { font-size: 1.6rem; font-weight: 800; text-align: center; margin-bottom: 8px; }
     .card-form p.sub { font-size: 0.85rem; color: #9ca3af; text-align: center; margin-bottom: 24px; }
     .form-group { margin-bottom: 16px; }
     .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
-    @media (max-width: 600px) { .form-row { grid-template-columns: 1fr; } h1 { font-size: 1.8rem; } }
+    @media (max-width: 600px) { .form-row { grid-template-columns: 1fr; } }
     label { display: block; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; color: #9ca3af; margin-bottom: 6px; }
     input { width: 100%; background: #030712; border: 1px solid #374151; padding: 14px 16px; border-radius: 10px; color: #fff; font-size: 0.9rem; outline: none; }
     input:focus { border-color: #06b6d4; }
@@ -49,339 +44,186 @@
     .btn-auditor-trigger { width: 100%; padding: 16px; background: #10b981; border: none; border-radius: 12px; color: #030712; font-weight: 900; font-size: 1.05rem; cursor: pointer; margin-top: 12px; }
     .btn-back { display: block; text-align: center; font-size: 0.8rem; color: #6b7280; margin-top: 12px; cursor: pointer; background: none; border: none; width: 100%; }
 
-    /* RADAR DE PROCESSAMENTO */
+    /* Processamento e Laudo */
     .radar { text-align: center; padding: 40px 20px; max-width: 640px; margin: 0 auto; }
     .spinner { width: 70px; height: 70px; border: 4px solid rgba(6,182,212,0.2); border-top-color: #06b6d4; border-radius: 50%; animation: spin 1s infinite linear; margin: 0 auto 24px; }
     @keyframes spin { 100% { transform: rotate(360deg); } }
     .progress-track { width: 100%; background: #1f2937; height: 8px; border-radius: 999px; overflow: hidden; margin-top: 20px; }
     .progress-bar { width: 0%; height: 100%; background: linear-gradient(90deg, #06b6d4, #3b82f6); transition: width 0.4s ease; }
 
-    /* PÁGINA 4: LAYOUT COM O SMARTPHONE SIMULADOR (DESIGN EXATO DA CAPTURA 163248) */
-    .dashboard-grid { display: grid; grid-template-columns: 1.25fr 0.95fr; gap: 24px; align-items: start; margin-bottom: 24px; }
-    @media (max-width: 860px) { .dashboard-grid { grid-template-columns: 1fr; } }
-
-    .ai-card { background: #0b0f19; border: 1px solid #1f2937; border-radius: 16px; padding: 24px; height: 100%; }
+    .dashboard-grid { display: grid; grid-template-columns: 1fr; gap: 24px; max-width: 800px; margin: 0 auto; }
+    .ai-card { background: #0b0f19; border: 1px solid #1f2937; border-radius: 16px; padding: 24px; }
     .ai-card-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #1f2937; padding-bottom: 14px; margin-bottom: 16px; }
     .ai-title { font-weight: 800; font-size: 1.15rem; color: #fff; }
     .ai-subtitle { font-size: 0.75rem; color: #6b7280; margin-top: 2px; }
     .ai-badge { font-size: 0.75rem; font-weight: 700; padding: 6px 12px; border-radius: 6px; }
     .badge-red { background: rgba(239,68,68,0.15); color: #f87171; border: 1px solid rgba(239,68,68,0.3); }
-    .badge-green { background: rgba(16,185,129,0.15); color: #34d399; border: 1px solid rgba(16,185,129,0.3); }
+    .report-box { background: #030712; border: 1px solid #1f2937; border-radius: 12px; padding: 18px; font-size: 0.9rem; color: #e5e7eb; white-space: pre-wrap; line-height: 1.6; }
 
-    .report-box { background: #030712; border: 1px solid #1f2937; border-radius: 12px; padding: 18px; font-size: 0.9rem; color: #e5e7eb; max-height: 480px; overflow-y: auto; white-space: pre-wrap; line-height: 1.6; }
-
-    /* SMARTPHONE MOBILE FRAME */
-    .phone-mockup { background: #050811; border: 3px solid #1f2937; border-radius: 36px; padding: 20px 16px; box-shadow: 0 25px 50px rgba(0,0,0,0.6); position: relative; }
-    .phone-notch { width: 120px; height: 14px; background: #111827; border-radius: 0 0 10px 10px; margin: -10px auto 14px; }
-    .phone-search-bubble { background: #0f172a; border: 1px solid #1e293b; border-radius: 20px; padding: 10px 14px; font-size: 0.8rem; color: #94a3af; margin-bottom: 14px; display: flex; align-items: center; gap: 8px; }
-    .phone-search-bubble span { width: 8px; height: 8px; background: #38bdf8; border-radius: 50%; display: inline-block; }
-    .phone-ai-response { background: #0c1220; border: 1px solid #1e293b; border-radius: 14px; padding: 14px; margin-bottom: 14px; }
-    .phone-ai-name { font-size: 0.8rem; font-weight: 800; color: #38bdf8; margin-bottom: 4px; }
-    .phone-ai-sub { font-size: 0.75rem; color: #64748b; font-style: italic; }
-    .phone-list { display: flex; flex-direction: column; gap: 8px; margin-bottom: 16px; }
-    .phone-list-item { background: #090e1a; border: 1px solid #1e293b; border-radius: 8px; padding: 10px 12px; font-size: 0.75rem; display: flex; justify-content: space-between; align-items: center; }
-    .phone-list-item strong { color: #f3f4f6; }
-    .phone-status-tag { font-size: 0.7rem; font-weight: 700; color: #34d399; }
-    .phone-verdict-box { border-radius: 12px; padding: 12px; text-align: center; font-size: 0.75rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; border: 1px solid #ef4444; background: rgba(239,68,68,0.15); color: #fca5a5; }
-
-    /* CARD DE FECHAMENTO COM A FRASE ABRANGENTE */
-    .cta-card { background: linear-gradient(180deg, #0b0f19, #030712); border: 1px solid #1f2937; border-radius: 20px; padding: 36px 24px; text-align: center; }
-    .cta-card h4 { font-size: 1.35rem; font-weight: 800; margin-bottom: 8px; }
-    .cta-card p { font-size: 0.85rem; color: #9ca3af; max-width: 620px; margin: 0 auto 24px; line-height: 1.5; }
-
-    footer { border-top: 1px solid #111827; text-align: center; padding: 16px; font-size: 0.75rem; color: #4b5563; }
+    /* Nova Tela 5 (Bifurcação) */
+    .path-card { background: #0b0f19; border: 1px solid #1f2937; padding: 24px; border-radius: 12px; text-align: center; transition: transform 0.2s; }
+    .path-card:hover { transform: translateY(-5px); border-color: #38bdf8; }
   </style>
 </head>
 <body>
 
-  <header>
-    <div class="brand">
-      <div class="dot"></div>
-      AUDITOR<span>GEO</span>
-    </div>
-    <div class="status-pill">Motor: <strong>Motores de IA Conectados</strong></div>
-  </header>
+<header>
+  <div class="logo">Auditor<span>GEO</span></div>
+  <div class="status-indicator"><div class="status-dot"></div>Sistema Online</div>
+</header>
 
-  <main>
-    <div class="container">
+<main>
+  <div class="container">
+    
+    <!-- PÁGINA 1: Início -->
+    <section id="step-1" class="step-box active hero">
+      <div class="tag">Varredura de Presença em IA</div>
+      <h1>Sua Empresa é um <br><span>FANTASMA PARA AS IAs?</span></h1>
+      <div class="bullets">
+        <div class="bullet-item"><span>?</span> O <strong>ChatGPT</strong> recomenda o seu comércio ou indica o seu concorrente?</div>
+        <div class="bullet-item"><span>?</span> O <strong>Google Gemini</strong> encontra a sua localização e o seu catálogo?</div>
+      </div>
+      <button onclick="goToStep(2)" class="btn-primary">QUERO AVALIAR MINHA EMPRESA AGORA</button>
+    </section>
 
-      <!-- PÁGINA 1: DESPERTAR DO PROBLEMA (100% PRESERVADA) -->
-      <section id="step-1" class="step-box active hero">
-        <div class="tag">Varredura de Presença em IA</div>
-        <h1>Sua Empresa é um <br><span>FANTASMA PARA AS IAs?</span></h1>
-        
-        <div class="bullets">
-          <div class="bullet-item"><span>?</span> O <strong>ChatGPT</strong> recomenda o seu comércio ou indica o seu concorrente?</div>
-          <div class="bullet-item"><span>?</span> O <strong>Google Gemini</strong> encontra a sua localização e o seu catálogo?</div>
-          <div class="bullet-item"><span>?</span> O <strong>Perplexity</strong> sabe que a sua loja existe no seu bairro?</div>
+    <!-- PÁGINA 2: Busca -->
+    <section id="step-2" class="step-box card-form">
+      <h2>Parâmetros Regionais da Busca</h2>
+      <p class="sub">Simulamos o que um cliente real pesquisa por voz ou texto.</p>
+      <form onsubmit="event.preventDefault(); goToStep(3);">
+        <div class="form-row form-group">
+          <div><label>Estado e Cidade</label><input type="text" id="stateCity" required placeholder="Ex: Matão - SP"></div>
+          <div><label>Setor / Especialidade</label><input type="text" id="niche" required placeholder="Ex: Supermercado"></div>
         </div>
+        <div class="form-group"><label>Item Buscado</label><input type="text" id="specificItem" required placeholder="Ex: padaria"></div>
+        <button type="submit" class="btn-step2">AVANÇAR PARA IDENTIFICAÇÃO →</button>
+      </form>
+    </section>
 
-        <div>
-          <button onclick="goToStep(2)" class="btn-primary">QUERO AVALIAR MINHA EMPRESA AGORA</button>
-          <div class="hint">Consulta neural direta aos motores de busca • Sem custos</div>
+    <!-- PÁGINA 3: Captura de Lead (Totalmente Limpa) -->
+    <section id="step-3" class="step-box card-form">
+      <h2>Identificação da Empresa</h2>
+      <p class="sub">Cruzaremos os dados da pesquisa com o seu negócio e enviaremos o laudo detalhado.</p>
+      <form id="leadForm" onsubmit="executeAuditor(event)">
+        <div class="form-group"><label>Nome Comercial</label><input type="text" id="businessName" required placeholder="Ex: Supermercado Tudibom"></div>
+        <div class="form-group"><label>Seu Nome</label><input type="text" id="contactName" required></div>
+        <div class="form-row form-group">
+          <div><label>WhatsApp</label><input type="tel" id="phone" required></div>
+          <div><label>E-mail</label><input type="email" id="email" required></div>
         </div>
-      </section>
+        <button type="submit" class="btn-auditor-trigger">AUDITOR • CONFRONTAR COM A IA AGORA</button>
+      </form>
+    </section>
 
-      <!-- PÁGINA 2: PARÂMETROS REGIONAIS ISENTOS -->
-      <section id="step-2" class="step-box card-form">
-        <h2>Parâmetros Regionais da Busca</h2>
-        <p class="sub">Simulamos o que um cliente real pesquisa por voz ou texto no smartphone na sua região.</p>
+    <!-- PROCESSAMENTO -->
+    <section id="step-loading" class="step-box radar">
+      <div class="spinner"></div>
+      <h3>Conectando aos Motores de IA...</h3>
+      <div class="progress-track"><div id="bar" class="progress-bar"></div></div>
+    </section>
 
-        <form id="regionForm" onsubmit="validateStep2AndNext(event)">
-          <div class="form-row form-group">
-            <div>
-              <label>País</label>
-              <input type="text" id="country" value="Brasil" required>
-            </div>
-            <div>
-              <label>Estado e Cidade (Obrigatório)</label>
-              <input type="text" id="stateCity" required placeholder="Ex: Matão - SP ou São Paulo - SP">
-            </div>
+    <!-- PÁGINA 4: Laudo -->
+    <section id="step-4" class="step-box">
+      <div class="dashboard-grid">
+        <div class="ai-card">
+          <div class="ai-card-header">
+            <div><div class="ai-title">Laudo Oficial - Gemini AI</div></div>
+            <div class="ai-badge badge-red">✗ Sua Empresa foi Omitida</div>
           </div>
-
-          <div class="form-row form-group">
-            <div>
-              <label>Bairro ou Região (Opcional)</label>
-              <input type="text" id="district" placeholder="Deixe em branco para toda a cidade">
-            </div>
-            <div>
-              <label>Setor / Especialidade Profissional (Obrigatório)</label>
-              <input type="text" id="niche" required placeholder="Ex: Restaurante, Clínica Médica, Supermercado, Oficina...">
-            </div>
-          </div>
-
-          <div class="form-group">
-            <label>Item ou Especialidade Buscada (Obrigatório)</label>
-            <input type="text" id="specificItem" required placeholder="Ex: espetinhos, cardiologia, troca de óleo, açougue...">
-          </div>
-
-          <button type="submit" class="btn-step2">AVANÇAR PARA IDENTIFICAÇÃO →</button>
-          <button type="button" onclick="goToStep(1)" class="btn-back">← Voltar para o início</button>
-        </form>
-      </section>
-
-      <!-- PÁGINA 3: IDENTIFICAÇÃO DO NEGÓCIO + DISPARO -->
-      <section id="step-3" class="step-box card-form">
-        <h2>Identificação da Empresa ou Profissional</h2>
-        <p class="sub">Cruzaremos os dados da pesquisa com o seu negócio e enviaremos o laudo detalhado.</p>
-
-        <form id="leadForm" onsubmit="executeAuditor(event)">
-          <div class="form-group">
-            <label>Nome Comercial, Clínica, Escritório ou Marca (Obrigatório)</label>
-            <input type="text" id="businessName" required placeholder="Ex: Restaurante Sabores do Sul, Clínica Vida Plena...">
-          </div>
-
-          <div class="form-group">
-            <label>Nome do Responsável / Solicitante (Obrigatório)</label>
-            <input type="text" id="contactName" required placeholder="Ex: Dr. Roberto Alencar (Diretor ou Titular)">
-          </div>
-
-          <div class="form-row form-group">
-            <div>
-              <label>WhatsApp com DDD (Obrigatório)</label>
-              <input type="tel" id="phone" required placeholder="(11) 98765-4321">
-            </div>
-            <div>
-              <label>Seu Melhor E-mail (Obrigatório)</label>
-              <input type="email" id="email" required placeholder="contato@empresa.com.br">
-            </div>
-          </div>
-
-          <button type="submit" class="btn-auditor-trigger">AUDITOR • CONFRONTAR COM A IA AGORA</button>
-          <button type="button" onclick="goToStep(2)" class="btn-back">← Voltar para parâmetros de busca</button>
-        </form>
-      </section>
-
-      <!-- PROCESSAMENTO NEURAL -->
-      <section id="step-loading" class="step-box radar">
-        <div class="spinner"></div>
-        <h3 style="font-size: 1.2rem; font-weight: 700;">Conectando aos Motores de IA...</h3>
-        <p style="font-size: 0.85rem; color: #9ca3af; margin-top: 6px;">Executando varredura regional isenta e confrontando com o seu negócio...</p>
-        <div class="progress-track">
-          <div id="bar" class="progress-bar"></div>
-        </div>
-      </section>
-
-      <!-- PÁGINA 4: LAUDO DE CONFRONTO COM SMARTPHONE (Captura 163248) -->
-      <section id="step-4" class="step-box">
-        
-        <div class="dashboard-grid">
+          <div id="outGemini" class="report-box">Carregando laudo...</div>
           
-          <!-- COLUNA ESQUERDA: LAUDO ALGORÍTMICO COMPLETO -->
-          <div class="ai-card">
-            <div class="ai-card-header">
-              <div>
-                <div class="ai-title">Google Gemini</div>
-                <div class="ai-subtitle">Gemini 2.5 Flash • Consulta Neural em Tempo Real</div>
-              </div>
-              <div id="badgeGemini" class="ai-badge badge-red">✗ Omitido</div>
-            </div>
-            <label style="font-size: 0.75rem; color: #9ca3af; display: block; margin-bottom: 8px; font-weight: 700;">LAUDO ALGORÍTMICO OFICIAL:</label>
-            <div id="outGemini" class="report-box">Aguardando laudo...</div>
+          <div style="margin-top: 24px; text-align: center;">
+            <p style="color: #ff4444; font-size: 0.9em; margin-bottom: 12px; font-weight: bold;">
+              Sua empresa está perdendo clientes todos os dias por não estar no radar da IA.
+            </p>
+            <button onclick="goToStep(5)" class="btn-primary" style="width: 100%; background: #ff4444; border-radius: 8px;">COMO RESOLVER ISSO?</button>
           </div>
+        </div>
+      </div>
+    </section>
 
-          <!-- COLUNA DIREITA: SIMULADOR DE CELULAR DO CLIENTE (MOBILE QUERY) -->
-          <div class="phone-mockup">
-            <div class="phone-notch"></div>
-            
-            <div class="phone-search-bubble">
-              <span></span>
-              <div id="phoneSearchText">restaurante em matão sp</div>
-            </div>
-
-            <div class="phone-ai-response">
-              <div class="phone-ai-name">Google Gemini:</div>
-              <div class="phone-ai-sub">"Com base nas avaliações e dados locais mapeados na cidade:"</div>
-            </div>
-
-            <div style="font-size: 0.7rem; font-weight: 800; color: #94a3af; margin-bottom: 8px; text-transform: uppercase;">Top Recomendações da IA:</div>
-            
-            <div class="phone-list">
-              <div class="phone-list-item">
-                <span id="rank1Name"><strong>1º Concorrente Citado</strong></span>
-                <span class="phone-status-tag">Recomendado</span>
-              </div>
-              <div class="phone-list-item">
-                <span id="rank2Name"><strong>2º Concorrente Citado</strong></span>
-                <span class="phone-status-tag">Recomendado</span>
-              </div>
-              <div class="phone-list-item">
-                <span id="rank3Name"><strong>3º Concorrente Citado</strong></span>
-                <span class="phone-status-tag">Recomendado</span>
-              </div>
-            </div>
-
-            <div id="phoneVerdict" class="phone-verdict-box">
-              ⚠️ SUA EMPRESA NÃO FOI CITADA NESTA BUSCA
-            </div>
-            <div style="text-align: center; font-size: 0.65rem; color: #475569; margin-top: 8px;">Simulação de consulta via assistente mobile</div>
-          </div>
-
+    <!-- PÁGINA 5: A BIFURCAÇÃO (O pulo do gato) -->
+    <section id="step-5" class="step-box card-form" style="max-width: 800px;">
+      <h2>Escolha o seu caminho</h2>
+      <p class="sub">Selecione o perfil que melhor descreve o seu objetivo atual para direcionarmos a solução correta:</p>
+      
+      <div class="form-row" style="margin-top: 30px;">
+        <!-- Botão A -->
+        <div class="path-card">
+          <h3 style="color: #06b6d4; margin-bottom: 12px; font-size: 1.2rem;">PARA O MEU PRÓPRIO NEGÓCIO</h3>
+          <p style="font-size: 0.85rem; color: #9ca3af; margin-bottom: 24px; height: 60px;">Caminho direto para donos de empresas que precisam posicionar seu estabelecimento nas IAs e recuperar a visibilidade local.</p>
+          <button onclick="enviarParaVSL('dono')" class="btn-step2" style="margin: 0;">SELECIONAR ESTE CAMINHO</button>
         </div>
 
-        <!-- BLOCO INFERIOR COM A FRASE ABRANGENTE -->
-        <div class="cta-card">
-          <h4>Quer posicionar seu negócio com o máximo alcance nas respostas das I.A.s?</h4>
-          <p>Existe um protocolo canônico estruturado em GEO que injeta os seus dados diretamente no grafo de conhecimento das principais IAs para garantir máxima visibilidade.</p>
-          <a id="btnNext" href="#" class="btn-primary" style="display: block; margin: 0 auto;">DESTRAVAR MEU ESTABELECIMENTO AGORA</a>
+        <!-- Botão B -->
+        <div class="path-card">
+          <h3 style="color: #10b981; margin-bottom: 12px; font-size: 1.2rem;">APRENDER UMA NOVA PROFISSÃO</h3>
+          <p style="font-size: 0.85rem; color: #9ca3af; margin-bottom: 24px; height: 60px;">Caminho para profissionais e entusiastas que querem dominar este protocolo e faturar prestando serviços para outras empresas.</p>
+          <button onclick="enviarParaVSL('consultor')" class="btn-auditor-trigger" style="margin: 0;">SELECIONAR ESTE CAMINHO</button>
         </div>
+      </div>
+    </section>
 
-      </section>
+  </div>
+</main>
 
-    </div>
-  </main>
+<script>
+  // CAPTURADOR GLOBAL DE TRÁFEGO (UTMs)
+  const parametrosOrigem = new URLSearchParams(window.location.search).toString();
 
-  <footer>Auditor GEO • Análise Algorítmica e Motores de Síntese Local</footer>
+  function goToStep(step) {
+    document.querySelectorAll('.step-box').forEach(el => el.classList.remove('active'));
+    document.getElementById(`step-${step}`).classList.add('active');
+  }
 
-  <script>
-    function goToStep(n) {
-      document.querySelectorAll('.step-box').forEach(el => el.classList.remove('active'));
-      const target = document.getElementById('step-' + n);
-      if (target) target.classList.add('active');
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
+  async function executeAuditor(e) {
+    e.preventDefault();
+    goToStep('loading');
+    
+    // Animação de progresso falsa enquanto chama a API
+    let progress = 0;
+    const bar = document.getElementById('bar');
+    const interval = setInterval(() => { progress += 10; bar.style.width = `${progress}%`; if (progress >= 90) clearInterval(interval); }, 500);
 
-    function validateStep2AndNext(e) {
-      e.preventDefault();
+    const payload = {
+      stateCity: document.getElementById('stateCity').value,
+      niche: document.getElementById('niche').value,
+      specificItem: document.getElementById('specificItem').value,
+      businessName: document.getElementById('businessName').value,
+      contactName: document.getElementById('contactName').value,
+      phone: document.getElementById('phone').value,
+      email: document.getElementById('email').value,
+      mentorRef: new URLSearchParams(window.location.search).get('ref') || 'raiz_direta'
+    };
+
+    try {
+      const res = await fetch('/api/audit', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+      
+      const data = await res.json();
+      clearInterval(interval);
+      bar.style.width = '100%';
+
+      setTimeout(() => {
+        document.getElementById('outGemini').innerText = data.geminiLaudo || "Falha ao gerar o laudo da IA.";
+        goToStep(4);
+      }, 500);
+
+    } catch (err) {
+      clearInterval(interval);
+      alert("Erro na conexão com as IAs. Tente novamente.");
       goToStep(3);
     }
+  }
 
-    async function executeAuditor(e) {
-      e.preventDefault();
-
-      const country = (document.getElementById('country').value || 'Brasil').trim();
-      const stateCity = (document.getElementById('stateCity').value || '').trim();
-      const district = (document.getElementById('district').value || '').trim() || 'toda a cidade';
-      const niche = (document.getElementById('niche').value || '').trim();
-      const specificItem = (document.getElementById('specificItem').value || '').trim();
-
-      const businessName = (document.getElementById('businessName').value || '').trim();
-      const contactName = (document.getElementById('contactName').value || '').trim();
-      const phone = (document.getElementById('phone').value || '').trim();
-      const email = (document.getElementById('email').value || '').trim();
-
-      if (!stateCity || !niche || !specificItem) {
-        alert('Por favor, preencha todos os campos obrigatórios da busca na Página 2.');
-        goToStep(2);
-        return;
-      }
-
-      const urlParams = new URLSearchParams(window.location.search);
-      const trackingRef = urlParams.get('ref') || 'raiz_direta';
-
-      // Atualiza o texto da busca dentro do celularzinho
-      document.getElementById('phoneSearchText').innerText = `${specificItem} (${niche}) em ${stateCity}`;
-
-      goToStep('loading');
-      const bar = document.getElementById('bar');
-      bar.style.width = '30%';
-
-      const progress = setInterval(() => {
-        let w = parseInt(bar.style.width);
-        if (w < 85) bar.style.width = (w + 15) + '%';
-      }, 400);
-
-      try {
-        const payload = {
-          country,
-          stateCity,
-          district,
-          niche,
-          specificItem,
-          businessName,
-          contactName,
-          phone,
-          email,
-          ref: trackingRef
-        };
-
-        const res = await fetch('/api/audit', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(payload)
-        });
-
-        clearInterval(progress);
-        bar.style.width = '100%';
-
-        const data = await res.json();
-        if (!res.ok) throw new Error(data.error || 'Erro na requisição');
-
-        const gemText = data.iaResponseText || "Sem retorno do motor.";
-        const isFound = data.isMentioned;
-
-        document.getElementById('outGemini').innerText = gemText;
-
-        const bGem = document.getElementById('badgeGemini');
-        const phoneVerdict = document.getElementById('phoneVerdict');
-
-        if (isFound) {
-          bGem.className = 'ai-badge badge-green';
-          bGem.innerText = '✓ Reconhecido';
-
-          phoneVerdict.style.borderColor = '#10b981';
-          phoneVerdict.style.backgroundColor = 'rgba(16, 185, 129, 0.15)';
-          phoneVerdict.style.color = '#6ee7b7';
-          phoneVerdict.innerText = '✓ SUA EMPRESA FOI ENCONTRADA NA IA!';
-        } else {
-          bGem.className = 'ai-badge badge-red';
-          bGem.innerText = '✗ Omitido';
-
-          phoneVerdict.style.borderColor = '#ef4444';
-          phoneVerdict.style.backgroundColor = 'rgba(239, 68, 68, 0.15)';
-          phoneVerdict.style.color = '#fca5a5';
-          phoneVerdict.innerText = '⚠️ SUA EMPRESA NÃO FOI CITADA NESTA BUSCA';
-        }
-
-        document.getElementById('btnNext').href = `vsl.html?ref=${encodeURIComponent(trackingRef)}&empresa=${encodeURIComponent(businessName)}&cidade=${encodeURIComponent(stateCity)}&whats=${encodeURIComponent(phone)}&email=${encodeURIComponent(email)}`;
-
-        goToStep(4);
-      } catch (err) {
-        clearInterval(progress);
-        alert('Aviso da Varredura: ' + err.message);
-        goToStep(3);
-      }
-    }
-  </script>
+  // ROTEADOR INTELIGENTE (Repassa o perfil e as UTMs)
+  function enviarParaVSL(perfil) {
+    // Junta o perfil escolhido com as UTMs que estavam na URL do cliente
+    window.location.href = `vsl.html?perfil=${perfil}&${parametrosOrigem}`;
+  }
+</script>
 </body>
 </html>
