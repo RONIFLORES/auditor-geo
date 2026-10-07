@@ -1,4 +1,3 @@
-// Atualizacao forcada 
 // api/audit.js
 export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Credentials', true);
@@ -28,6 +27,7 @@ export default async function handler(req, res) {
     if (!cidadeFinal) return res.status(400).json({ error: 'Por favor, informe a Cidade.' });
     if (!segmentoFinal) return res.status(400).json({ error: 'Por favor, informe o Segmento.' });
 
+    // Envio para o Webhook (Preservado e Intacto)
     const WEBHOOK_URL = process.env.LEADS_WEBHOOK_URL;
     if (WEBHOOK_URL) {
       try {
@@ -44,7 +44,7 @@ export default async function handler(req, res) {
     }
 
     const apiKey = (process.env.GEMINI_API_KEY || '').trim();
-    if (!apiKey) return res.status(500).json({ error: 'Chave API ausente.' });
+    if (!apiKey) return res.status(500).json({ error: 'Chave API ausente no servidor Vercel.' });
 
     const localContexto = (bairroFinal && bairroFinal !== 'toda a cidade') ? `${bairroFinal}, ${cidadeFinal}` : cidadeFinal;
     const itemTexto = itemFinal ? `com foco em ${itemFinal}` : '';
@@ -57,16 +57,20 @@ Instruções mandatórias:
 3. Não faça perguntas de volta. Entregue o laudo imediatamente.
 4. IMPORTANTE: Conclua a sua resposta até o fim, não corte o texto pela metade.`;
 
-    const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
+    const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent`;
     
     let iaResponseText = "";
+    let erroReal = ""; 
     
-    // Loop Silencioso: Tenta até 3 vezes com intervalo caso o servidor esteja lotado
+    // Loop de tentativas com autenticação restaurada
     for (let tentativa = 1; tentativa <= 3; tentativa++) {
         try {
           const resp = await fetch(url, {
             method: "POST",
-            headers: { "Content-Type": "application/json" },
+            headers: { 
+              "Content-Type": "application/json",
+              "x-goog-api-key": apiKey 
+            },
             body: JSON.stringify({
               contents: [{ parts: [{ text: prompt }] }],
               generationConfig: { temperature: 0.2, maxOutputTokens: 850 }
@@ -77,14 +81,19 @@ Instruções mandatórias:
           if (resp.ok && data.candidates?.[0]?.content?.parts?.[0]?.text) {
             iaResponseText = data.candidates[0].content.parts[0].text;
             break;
+          } else {
+            erroReal = data.error?.message || "Erro desconhecido do Google";
           }
-        } catch (err) {}
+        } catch (err) {
+          erroReal = err.message;
+        }
       if (iaResponseText) break;
-      await delay(2500); // Aguarda 2.5 segundos silenciosamente antes de tentar novamente
+      await delay(2500);
     }
 
     if (!iaResponseText) {
-      return res.status(500).json({ error: 'Nossos servidores estão com alto tráfego. Por favor, tente novamente.' });
+      // Agora o sistema mostrará o erro VERDADEIRO na tela
+      return res.status(500).json({ error: `IA falhou. Motivo: ${erroReal}` });
     }
 
     const cleanStr = (s) => (s || "").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9\s]/g, " ").trim();
@@ -95,11 +104,9 @@ Instruções mandatórias:
     if (cleanText.includes(cleanTarget)) {
       isMentioned = true;
     } else {
-      // Filtro Rigoroso: Remove palavras genéricas para evitar falsos positivos
-      const stopWords = ["o", "a", "os", "as", "de", "do", "da", "em", "e", "ltda", "me", "epp", "comercio", "servicos", "loja", "restaurante", "bar", "supermercado", "mercado", "padaria", "farmacia", "clinica", "oficina", "centro", "studio", "espaco"];
+      const stopWords = ["o", "a", "os", "as", "de", "do", "da", "em", "e", "ltda", "me", "epp", "comercio", "servicos", "loja", "restaurante", "bar", "supermercado", "mercado", "padaria", "farmacia", "clinica", "oficina", "centro", "studio", "espaco", "bairro", "sao", "jose", "matao", "rua", "avenida"];
       const words = cleanTarget.split(/\s+/).filter(w => w.length >= 3 && !stopWords.includes(w));
       
-      // MUDANÇA: Substituído "every" por "some" para evitar que nomes com sobrenomes quebrem a validação
       if (words.length > 0 && words.some(w => cleanText.includes(w))) {
         isMentioned = true;
       }
@@ -112,6 +119,6 @@ Instruções mandatórias:
     });
 
   } catch (err) {
-    return res.status(500).json({ error: 'Erro interno de conexão.' });
+    return res.status(500).json({ error: 'Erro interno de processamento.' });
   }
 }
