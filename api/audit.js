@@ -56,7 +56,7 @@ Instruções mandatórias:
 2. Para cada estabelecimento, destaque brevemente os diferenciais reais.
 3. Não faça perguntas de volta. Entregue o laudo imediatamente.`;
 
-    const modelsToTry = ["gemini-1.5-flash", "gemini-1.5-pro", "gemini-pro"];
+    const modelsToTry = ["gemini-3.8-flash", "gemini-3.7-flash", "gemini-1.5-flash"];
     let iaResponseText = "";
     
     // Loop Silencioso: Tenta até 3 vezes com intervalo caso o servidor esteja lotado
