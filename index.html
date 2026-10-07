@@ -219,10 +219,20 @@
     }
   }
 
-  // ROTEADOR INTELIGENTE (Repassa o perfil e as UTMs)
+  // ROTEADOR INTELIGENTE EXTERNO (Manda para a sua plataforma de vendas)
   function enviarParaVSL(perfil) {
-    // Junta o perfil escolhido com as UTMs que estavam na URL do cliente
-    window.location.href = `vsl.html?perfil=${perfil}&${parametrosOrigem}`;
+    let linkDestino = "";
+
+    if (perfil === 'dono') {
+      // Link da página de vendas para quem tem comércio
+      linkDestino = "https://seu-link-da-kiwify-ou-pagina.com/dono"; 
+    } else if (perfil === 'consultor') {
+      // Link da página de vendas do curso profissionalizante
+      linkDestino = "https://seu-link-da-kiwify-ou-pagina.com/consultor";
+    }
+
+    // Junta o link externo escolhido com as etiquetas de tráfego (UTMs)
+    window.location.href = `${linkDestino}?${parametrosOrigem}`;
   }
 </script>
 </body>
